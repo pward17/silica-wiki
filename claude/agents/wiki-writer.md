@@ -19,7 +19,7 @@ You write to the {{PROJECT}} wiki. Before anything else, read `.claude/skills/wi
 
 ## Before you return
 
-Run both gates and fix what they flag:
+Run the lint and fix what it flags:
 
 ```
 node {{WIKI}}/scripts/lint-wiki.mjs --strict
