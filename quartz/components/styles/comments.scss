@@ -1,0 +1,594 @@
+/* Reader comments: the composer, highlighted passages, threads and the rail. */
+/* Hidden until /api/comments answers; the display rule below would otherwise
+   override the hidden attribute. */
+.wiki-comment-footer[hidden] {
+  display: none;
+}
+
+.wiki-comment-footer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-left: 0.6rem;
+  vertical-align: middle;
+}
+
+.wiki-comment-footer button {
+  background: none;
+  text-decoration: none;
+  border: 1px solid var(--gray);
+  border-radius: 5px;
+  padding: 0.12rem 0.5rem;
+  color: var(--darkgray);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.1s ease,
+    color 0.1s ease,
+    border-color 0.1s ease;
+}
+
+/* --secondary and --light both flip with the theme, so one hover rule reads
+   correctly on either background. */
+.wiki-comment-footer button:hover:hover {
+  background: var(--secondary);
+  border-color: var(--secondary);
+  color: var(--light);
+}
+
+/* The button that follows a selection: a small round comment icon. */
+#wiki-comment-button {
+  position: absolute;
+  z-index: 999;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  background: var(--secondary);
+  color: var(--light);
+  border: none;
+  border-radius: 50%;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+#wiki-comment-button:hover {
+  filter: brightness(1.1);
+}
+
+#wiki-comment-panel {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 1000;
+  width: min(26rem, calc(100vw - 3rem));
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* A panel opened from a selection sits under the passage and scrolls with it,
+   so the text being discussed stays in view. The page-level button has no
+   passage to point at and keeps the corner. */
+#wiki-comment-panel.wiki-comment-anchored {
+  position: absolute;
+  right: auto;
+  bottom: auto;
+}
+
+.wiki-comment-mark {
+  position: absolute;
+  z-index: 998;
+  pointer-events: none;
+  background: var(--textHighlight);
+  border-radius: 2px;
+}
+
+.wiki-comment-inner {
+  padding: 0.9rem;
+}
+
+.wiki-comment-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.wiki-comment-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--gray);
+}
+
+.wiki-comment-quote {
+  margin: 0 0 0.6rem 0;
+  padding: 0.4rem 0.6rem;
+  border-left: 3px solid var(--secondary);
+  background: var(--lightgray);
+  font-size: 0.82rem;
+  max-height: 7rem;
+  overflow-y: auto;
+  color: var(--darkgray);
+}
+
+.wiki-comment-text {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 4px;
+  background: var(--light);
+  color: var(--dark);
+  resize: vertical;
+}
+
+.wiki-comment-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.6rem;
+  gap: 0.6rem;
+}
+
+.wiki-comment-status {
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+
+.wiki-comment-send {
+  background: var(--secondary);
+  color: var(--light);
+  border: none;
+  border-radius: 4px;
+  padding: 0.35rem 0.9rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.wiki-comment-send:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.wiki-comment-done {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Open comments on the page. The highlight is quieter than the one a reader
+   gets while writing a comment, since several can sit on one page and they
+   stay there until resolved. */
+mark.wiki-thread {
+  background: color-mix(in srgb, var(--textHighlight) 45%, transparent);
+  border-bottom: 2px solid var(--tertiary);
+  color: inherit;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+mark.wiki-thread:hover {
+  background: var(--textHighlight);
+}
+
+.wiki-thread-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.2rem;
+  height: 1.2rem;
+  margin-left: 0.25rem;
+  padding: 0 0.3rem;
+  border: none;
+  border-radius: 0.6rem;
+  background: var(--secondary);
+  color: var(--light);
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: text-top;
+  cursor: pointer;
+}
+
+.wiki-thread-chip {
+  background: var(--textHighlight);
+  border: 1px solid var(--tertiary);
+  border-radius: 5px;
+  padding: 0.12rem 0.5rem;
+  color: var(--dark);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#wiki-thread-panel,
+#wiki-thread-index {
+  position: absolute;
+  z-index: 1000;
+  width: min(28rem, calc(100vw - 3rem));
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+}
+
+.wiki-thread-link {
+  margin-left: auto;
+  margin-right: 0.6rem;
+  font-size: 0.8rem;
+}
+
+.wiki-thread-list {
+  max-height: 18rem;
+  overflow-y: auto;
+  margin-bottom: 0.6rem;
+}
+
+.wiki-thread-entry {
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--lightgray);
+  font-size: 0.85rem;
+}
+
+.wiki-thread-entry:last-child {
+  border-bottom: none;
+}
+
+/* The reader's own messages: only the name is coloured, gold as in Slack. No
+   fill and no bar, so the text reads like everyone else's and theirs still
+   stand out at a glance, in the panel and in the cards alike. The dark theme
+   gets the bright Slack shade; on the light theme that shade is unreadable,
+   so it gets the deepest gold that still reads as gold (4.9:1 on the page). */
+:root {
+  --wiki-me: #946400;
+}
+
+:root[saved-theme="dark"] {
+  --wiki-me: #f2c744;
+}
+
+.wiki-thread-mine .wiki-thread-who strong {
+  color: var(--wiki-me);
+}
+
+.wiki-thread-who {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.15rem;
+  color: var(--darkgray);
+}
+
+.wiki-thread-when,
+.wiki-thread-loading {
+  color: var(--gray);
+  font-size: 0.78rem;
+}
+
+/* Comment text is rendered from a small slice of Markdown, so the blocks it
+   can produce are styled here. The container no longer preserves newlines:
+   paragraphs and <br> carry them, and only a code block keeps its own. */
+.wiki-thread-text {
+  color: var(--dark);
+}
+
+.wiki-thread-text > p {
+  margin: 0 0 0.45rem;
+}
+
+.wiki-thread-text > p:last-child {
+  margin-bottom: 0;
+}
+
+.wiki-thread-text ul,
+.wiki-thread-text ol {
+  margin: 0 0 0.45rem;
+  padding-left: 1.2rem;
+}
+
+.wiki-thread-text li {
+  margin: 0.1rem 0;
+}
+
+.wiki-thread-text code {
+  padding: 0.05rem 0.25rem;
+  border-radius: 3px;
+  background: var(--lightgray);
+  font-size: 0.9em;
+}
+
+.wiki-thread-text pre {
+  margin: 0 0 0.45rem;
+  padding: 0.4rem 0.55rem;
+  border-radius: 4px;
+  background: var(--lightgray);
+  overflow-x: auto;
+}
+
+.wiki-thread-text pre code {
+  padding: 0;
+  background: none;
+  white-space: pre;
+  font-size: 0.8em;
+  line-height: 1.35;
+}
+
+.wiki-thread-text a {
+  word-break: break-word;
+}
+
+.wiki-thread-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Per-message reply: shown on hover so the thread stays quiet to read. */
+.wiki-thread-reply {
+  display: none;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--secondary);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Shown on hover only, and taking no room otherwise: an invisible button
+   still occupying its width reads as a gap in the header row. */
+.wiki-thread-entry:hover .wiki-thread-reply,
+.wiki-thread-entry:focus-within .wiki-thread-reply {
+  display: inline;
+}
+
+.wiki-thread-quote {
+  margin: 0.1rem 0 0.25rem 0;
+  padding: 0.1rem 0.5rem;
+  border-left: 2px solid var(--gray);
+  color: var(--gray);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wiki-thread-target {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  padding: 0.2rem 0.5rem;
+  border-left: 2px solid var(--secondary);
+  background: var(--highlight);
+  color: var(--darkgray);
+  font-size: 0.78rem;
+}
+
+.wiki-thread-target span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wiki-thread-buttons {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.wiki-thread-resolve {
+  background: none;
+  border: 1px solid var(--gray);
+  border-radius: 4px;
+  padding: 0.35rem 0.8rem;
+  color: var(--darkgray);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.wiki-thread-resolve:hover {
+  background: var(--secondary);
+  border-color: var(--secondary);
+  color: var(--light);
+}
+
+.wiki-thread-resolve:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.wiki-thread-row {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--lightgray);
+  padding: 0.45rem 0.2rem;
+  color: var(--dark);
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.wiki-thread-row:hover {
+  background: var(--highlight);
+}
+
+.wiki-thread-note {
+  display: block;
+  color: var(--gray);
+  font-size: 0.78rem;
+}
+
+/* The rail: open threads beside their passages, in the right column. Cards
+   are positioned by script, level with the highlight they belong to. */
+#wiki-thread-rail {
+  position: absolute;
+  top: 0;
+  height: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.wiki-rail-card {
+  position: absolute;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+  padding: 0.55rem 0.9rem 0.8rem;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-left: 3px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  font-size: 0.82rem;
+  pointer-events: auto;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.wiki-rail-card:hover {
+  border-left-color: var(--tertiary);
+}
+
+.wiki-rail-card.wiki-rail-active {
+  border-left-color: var(--secondary);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+  z-index: 1;
+}
+
+.wiki-rail-card .wiki-thread-who {
+  margin-bottom: 0.3rem;
+}
+
+.wiki-rail-card .wiki-thread-entry {
+  padding: 0.45rem 0;
+  font-size: 0.82rem;
+}
+
+/* A folded card whose opening comment is the reader's own: the name in the
+   summary is coloured, the card itself is not. */
+.wiki-rail-card.wiki-rail-mine .wiki-rail-summary strong {
+  color: var(--wiki-me);
+}
+
+.wiki-rail-card .wiki-thread-link {
+  margin: 0;
+}
+
+.wiki-rail-card .wiki-thread-meta {
+  gap: 0.6rem;
+}
+
+/* Folded: a line for who and how much, a line of the text. Everything else
+   waits until the card is the current one. */
+.wiki-rail-summary {
+  display: none;
+}
+
+.wiki-rail-folded {
+  padding: 0.45rem 0.9rem 0.5rem;
+}
+
+.wiki-rail-folded .wiki-rail-summary {
+  display: block;
+}
+
+.wiki-rail-folded .wiki-thread-list,
+.wiki-rail-folded .wiki-thread-compose,
+.wiki-rail-folded .wiki-rail-quote {
+  display: none;
+}
+
+.wiki-rail-summary .wiki-thread-who {
+  margin-bottom: 0.1rem;
+}
+
+.wiki-rail-snippet {
+  color: var(--darkgray);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wiki-rail-replies {
+  padding: 0 0.35rem;
+  border-radius: 0.6rem;
+  background: var(--lightgray);
+  color: var(--darkgray);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* A comment on a diagram: a marker line under it, since the drawing itself
+   cannot carry a highlight. */
+mark.wiki-thread-block {
+  display: inline-block;
+  margin: 0.3rem 0 0.6rem;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.8rem;
+  color: var(--darkgray);
+}
+
+/* The reply box in a card is one quiet line until the reader means it. */
+.wiki-thread-compact .wiki-comment-text {
+  font-size: 0.82rem;
+  padding: 0.35rem 0.5rem;
+  resize: none;
+}
+
+.wiki-thread-compact .wiki-comment-actions,
+.wiki-thread-compact .wiki-thread-target {
+  display: none;
+}
+
+.wiki-thread-compact.wiki-thread-open .wiki-comment-actions {
+  display: flex;
+  margin-top: 0.4rem;
+}
+
+.wiki-thread-compact.wiki-thread-open .wiki-thread-target {
+  display: flex;
+}
+
+.wiki-thread-compact .wiki-comment-send,
+.wiki-thread-compact .wiki-thread-resolve {
+  padding: 0.25rem 0.7rem;
+  font-size: 0.78rem;
+}
+
+/* The passage of the current thread, and a passage just navigated to. */
+mark.wiki-thread.wiki-thread-active {
+  background: var(--textHighlight);
+  border-bottom-color: var(--secondary);
+}
+
+mark.wiki-thread.wiki-thread-flash {
+  outline: 2px solid var(--secondary);
+  outline-offset: 1px;
+}
+
+.wiki-comment-filed {
+  cursor: default;
+}

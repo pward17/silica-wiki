@@ -48,6 +48,21 @@ The project owns `wiki/content/` (except `content/meta/`), `wiki/silica.config.j
 
 Root directory `wiki`, build command `npx quartz build`, output directory `public`, build watch paths `wiki/*`. Node 22 comes from `.node-version`. Gate the site with Cloudflare Access on both the custom domain and the `*.pages.dev` address.
 
+## Reader comments
+
+Readers select text on a page and leave a comment; it becomes a GitHub issue labelled `wiki-comment`, highlighted on the page with replies and a Resolve button beside it. Cloudflare Access identifies the reader, so nobody needs a GitHub account. The server side is Cloudflare Pages Functions in `functions/api/` (helpers in `lib/comments/`), deployed with the site whenever Pages builds or deploys from the wiki folder. Without the settings below the endpoints answer 503 and pages show no comment controls.
+
+Set these on the Pages project (Settings > Variables and Secrets, production):
+
+| Variable | Value |
+|---|---|
+| `WIKI_GITHUB_REPO` | `owner/name` of the repository holding the wiki |
+| `WIKI_ACCESS_TEAM_DOMAIN` | `<team>.cloudflareaccess.com` |
+| `WIKI_ACCESS_AUD` | the Access application's audience tag (its Overview tab, or `aud` in the Access API) |
+| `WIKI_GITHUB_TOKEN` (secret) | a fine-grained token with Issues read and write on that repository only |
+
+A GitHub App can replace the token: set `WIKI_GITHUB_APP_ID`, `WIKI_GITHUB_INSTALLATION_ID` and `WIKI_GITHUB_PRIVATE_KEY` (secret) instead. Issues are then filed by the app rather than by the token's account. Create the `wiki-comment` label in the repository first. How agents work through comments is in `claude/WIKI.md`.
+
 ## Pull Quartz updates into Silica
 
 Silica keeps Quartz's history, with Quartz as the `upstream` remote:

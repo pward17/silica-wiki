@@ -3,7 +3,8 @@
 #   <project>/.claude/skills/wiki-writer/   the writing skill
 #   <project>/.claude/agents/wiki-*.md      the reader and writer subagents
 #   <project>/.claude/silica/WIKI.md        the wiki rules, for the project's CLAUDE.md to import
-# Placeholders {{PROJECT}} and {{WIKI}} are filled in. Rerun after pulling Silica
+# Placeholders {{PROJECT}}, {{WIKI}} and {{REPO}} (owner/name of the GitHub
+# repository, from the origin remote) are filled in. Rerun after pulling Silica
 # updates; it overwrites only the files listed above.
 #
 # Usage: <wiki-dir>/scripts/install-claude.sh "<Project name>"
@@ -22,12 +23,14 @@ if [ "$root" = "$wiki_dir" ]; then
 else
   wiki_rel="${wiki_dir#"$root"/}"
 fi
+repo="$(git -C "$root" remote get-url origin 2>/dev/null | sed -E 's#^.*github\.com[:/]##; s#\.git$##')"
+repo="${repo:-<owner>/<repo>}"
 src="$wiki_dir/claude"
 dest="$root/.claude"
 
 render() { # render <template> <output>
   mkdir -p "$(dirname "$2")"
-  PROJECT="$project" WIKI="$wiki_rel" perl -pe 's/\{\{PROJECT\}\}/$ENV{PROJECT}/g; s/\{\{WIKI\}\}/$ENV{WIKI}/g' "$1" > "$2"
+  PROJECT="$project" WIKI="$wiki_rel" REPO="$repo" perl -pe 's/\{\{PROJECT\}\}/$ENV{PROJECT}/g; s/\{\{WIKI\}\}/$ENV{WIKI}/g; s/\{\{REPO\}\}/$ENV{REPO}/g' "$1" > "$2"
 }
 
 rm -rf "$dest/skills/wiki-writer"

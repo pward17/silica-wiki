@@ -4,6 +4,7 @@ import FolderContent from "./pages/FolderContent"
 import NotFound from "./pages/404"
 import ArticleTitle from "./ArticleTitle"
 import StatusBadge from "./StatusBadge"
+import PageComments from "./PageComments"
 import Darkmode from "./Darkmode"
 import ReaderMode from "./ReaderMode"
 import Head from "./Head"
@@ -28,6 +29,7 @@ import ConditionalRender from "./ConditionalRender"
 export {
   ArticleTitle,
   StatusBadge,
+  PageComments,
   Content,
   TagContent,
   FolderContent,
