@@ -14,7 +14,7 @@ Sentence shapes and page shapes that mark generated text. These matter more than
 
 **Vague attribution.** "Studies show", "experts agree", "it is widely understood", "the team decided". Name who, link where, or drop the sentence.
 
-**False balance.** "Both approaches have merit and the right choice depends on context." True and useless. A wiki page picks, and records why; if the choice is genuinely open, that is a decision page with `status: open` and the options written out.
+**False balance.** "Both approaches have merit and the right choice depends on context." True and useless. A wiki page picks, and records why; if the choice is genuinely open, that is a decision page with the options written out and no `## Chosen` section yet, which the badge marks undecided.
 
 **Announced noteworthiness.** "It's worth noting that", "importantly", "notably". If it is worth noting, note it; the announcement adds nothing.
 

@@ -3,7 +3,7 @@
 A wiki system for projects where coding agents write and humans verify. Silica Wiki is [Quartz v4](https://quartz.jzhao.xyz) plus:
 
 - **Three page signals** in the frontmatter, rendered as a badge under every title:
-  - `status`: `slop` (machine-written, unread by any human), `draft`, `active`, `open` (undecided decision), `superseded`.
+  - `status`: `slop` (machine-written, unread by any human), `draft`, `active`, `superseded`. A decision page with no `## Chosen` section also shows an `undecided` chip, worked out from the page.
   - `implementation`: `planned`, `partial`, `built`: whether the software the page describes exists. A folder page has none of its own; its badge counts the pages under it.
   - `approved_by`: which humans read the page, and when. Only humans write it.
 - **A lint** (`scripts/lint-wiki.mjs`) enforcing the page contract: frontmatter, resolvable wikilinks, dated footnotes and open questions, `PLANNED:` markers, no approvals on slop, a line limit.

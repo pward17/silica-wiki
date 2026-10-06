@@ -17,15 +17,16 @@ Every page carries three **orthogonal** signals. Never conflate them.
 
 The first two answer different questions. A page can be `slop` and `built`: live software documented by prose nobody has proofread. A page can be `active` and `planned`: a design somebody has read every line of, for something that does not exist yet. Both are ordinary.
 
-## The five statuses
+## The four statuses
 
 - **`slop`**: fresh LLM writing that no human has read. Every page an LLM creates or substantially rewrites starts here. Lifted only when a human has walked every line and takes responsibility for the text.
 - **`draft`**: in progress. Read with caution, and do not coordinate work on it as if it were settled.
 - **`active`**: current knowledge or an accepted decision. Safe to build on without re-asking.
-- **`open`** (*decision pages only*): the options are written up and the choice is not made. The required action is "decide".
 - **`superseded`**: replaced. `superseded_by:` is mandatory. The body is rewritten into what was proposed and why it was dropped.
 
 One word, no compound values. Nuances like "behind a feature flag" go into the first body paragraph.
+
+**Whether a decision is made is not a status.** A decision page with no `## Chosen` section shows an `undecided` chip under its title, worked out from the page on every build; the status beside it still says whether a human has read the options. A retired `open` status once did both jobs, so a machine-written decision still waiting on a choice showed `open` and hid that nobody had read it. The lint refuses `status: open`.
 
 ## Whether the thing exists
 
@@ -77,8 +78,6 @@ stateDiagram-v2
     slop --> active: human walks every line
     active --> superseded: newer page replaces it
     active --> slop: LLM rewrites
-    [*] --> open: decision written
-    open --> active: choice made
 ```
 
 ## Open questions
@@ -88,4 +87,4 @@ stateDiagram-v2
 ## Related
 
 - [[format-standard]]: the page-writing spec this model plugs into.
-- [[decision-template]]: how `open` and `active` work on decision pages.
+- [[decision-template]]: how a decision page goes from undecided to chosen.
