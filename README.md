@@ -4,7 +4,7 @@ A wiki system for projects where coding agents write and humans verify. Silica W
 
 - **Three page signals** in the frontmatter, rendered as a badge under every title:
   - `status`: `slop` (machine-written, unread by any human), `draft`, `active`, `open` (undecided decision), `superseded`.
-  - `implementation`: `planned`, `partial`, `built`: whether the software the page describes exists.
+  - `implementation`: `planned`, `partial`, `built`: whether the software the page describes exists. A folder page has none of its own; its badge counts the pages under it.
   - `approved_by`: which humans read the page, and when. Only humans write it.
 - **A lint** (`scripts/lint-wiki.mjs`) enforcing the page contract: frontmatter, resolvable wikilinks, dated footnotes and open questions, `PLANNED:` markers, no approvals on slop, a line limit.
 - **Meta pages** (`content/meta/`) documenting the conventions: status model, format standard, decision template, folder entry pages.

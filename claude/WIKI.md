@@ -14,7 +14,7 @@ The wiki lives in `{{WIKI}}/`, a Quartz site built on Silica. Pages are Markdown
 
 **The LLM writes, humans verify.** Every page you (an LLM) create or substantially rewrite gets `status: slop`, and a substantial rewrite of a reviewed page clears its `approved_by`. You may propose promoting a page, but only a human sets `active` and adds themselves to `approved_by`. Never set `approved_by` yourself. The full model is `{{WIKI}}/content/meta/status-model.md`.
 
-Pages in the implementation folders (`technical/` and `product/` unless `{{WIKI}}/silica.config.json` lists others) also carry `implementation: planned | partial | built`: whether the software exists, a different question from whether the text is trustworthy. A `slop` page about a live service is `built`; an `active` design for something unbuilt is `planned`. Decide it by reading the code, never by reading the page. On a `partial` page every unbuilt paragraph starts with `PLANNED:`.
+Pages in the implementation folders (`technical/` and `product/` unless `{{WIKI}}/silica.config.json` lists others) also carry `implementation: planned | partial | built` (except a folder's `index.md`, whose badge counts the pages under it): whether the software exists, a different question from whether the text is trustworthy. A `slop` page about a live service is `built`; an `active` design for something unbuilt is `planned`. Decide it by reading the code, never by reading the page. On a `partial` page every unbuilt paragraph starts with `PLANNED:`.
 
 When the code and an `active` page disagree, say so rather than quietly picking one.
 

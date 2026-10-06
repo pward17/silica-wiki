@@ -21,7 +21,7 @@ Follow it in order. Every skipped step has produced a wrong page somewhere.
 6. **Set the frontmatter honestly.**
    - `status: slop` on every page you create or substantially rewrite, and delete its `approved_by`: the vouch applied to the old text. A small factual correction on a reviewed page keeps its status, but say so in the review list.
    - Never set `approved_by`, never promote a page, never move a page from `slop` to anything else. Only a human does that.
-   - `implementation:` (in the implementation folders: `technical/` and `product/` unless `{{WIKI}}/silica.config.json` lists others) comes from reading the code, never from the page. Re-read it on every edit. On a `partial` page every unbuilt paragraph starts with `PLANNED:`.
+   - `implementation:` (in the implementation folders: `technical/` and `product/` unless `{{WIKI}}/silica.config.json` lists others) comes from reading the code, never from the page. A folder's `index.md` has none: its badge counts the pages under it. Re-read it on every edit. On a `partial` page every unbuilt paragraph starts with `PLANNED:`.
    - `title:` is a name; aim for one to four words, three or fewer where possible (a strong preference: go longer only when no short name is clear): `Hosting`, not `Sites run on one Hetzner box in Ashburn`. What the page says about the subject belongs in `description:`. On a decision page the title names the question, not the answer.
    - `updated:` is today.
 7. **Run the gates and fix what they flag.**

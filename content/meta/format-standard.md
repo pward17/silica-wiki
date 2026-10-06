@@ -19,7 +19,8 @@ title: "Page title"          # the H1 comes from here; pages never start with a 
 type: entity | concept | decision | index
 status: slop | draft | active | open | superseded
 implementation: planned | partial | built   # does the SOFTWARE exist? required under
-                             # the implementation folders, refused elsewhere
+                             # the implementation folders except on a folder's
+                             # index.md (its badge counts its pages), refused elsewhere
 updated: YYYY-MM-DD          # last content revision; drives the date shown on cards
 created: YYYY-MM-DD
 description: "1-3 factual sentences about what is ON the page (not why it was made);
