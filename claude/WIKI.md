@@ -39,7 +39,7 @@ The wiki is only worth reading if it says what is true, including the gaps. An u
 
 The full spec and audit checklist is `{{WIKI}}/content/meta/format-standard.md`. The digest:
 
-- Frontmatter: `title` (the rendered H1; pages never start with their own `#`), `type` (entity/concept/decision/index), `status` (slop/draft/active/open/superseded), `implementation` (planned/partial/built, implementation folders only), `created`, `updated`, `description` (1-3 factual sentences, never empty), optional `approved_by`, `aliases`; `superseded_by` required iff superseded.
+- Frontmatter: `title` (the rendered H1; pages never start with their own `#`; a noun phrase of 1-4 words, preferably 3 or fewer, never a sentence: the detail goes in `description`), `type` (entity/concept/decision/index), `status` (slop/draft/active/open/superseded), `implementation` (planned/partial/built, implementation folders only), `created`, `updated`, `description` (1-3 factual sentences, never empty), optional `approved_by`, `aliases`; `superseded_by` required iff superseded.
 - Pages are specs of the current norm, not meeting digests. Provenance goes in dated footnotes (`[^slug]: Title, YYYY-MM-DD, URL : comment.`). No ticket numbers, commit SHAs or branch names in page bodies.
 - A person's name in the body is either the subject or a mistake: who decided goes in a footnote, who is building goes in the tracker.
 - Wikilinks are bare filenames (`[[page]]`), alias form in prose; a folder page is linked by path (`[[technical/index|technical]]`). One flat `## Related` list.
