@@ -39,7 +39,7 @@ The three axes, and why `status` and `implementation` are never the same questio
 
 A title is a name, not a sentence. Aim for a noun phrase of one to four words, three or fewer where possible (`Hosting`, `Client previews`, `Contact form`). It names what the page is about; what the page *says* about it goes in `description:` and the first paragraph. Sentence case, no trailing full stop, no verb clause. This is a strong preference, not a hard rule: a longer title is fine on the rare page where no short name is clear, but that is the exception, not the habit.
 
-- **Wrong:** `Sites run on one Hetzner box in Ashburn with single-node k3s`. **Right:** `Hosting`, with the box, the region and k3s in the description.
+- **Wrong:** `The contact form emails every message to the shared inbox`. **Right:** `Contact form`, with the inbox in the description.
 - **Decision pages too.** The title names the question (`Hosting provider`, `Auth method`), not the answer: the answer lives in `## Chosen:` and can change by supersession without a rename.
 - **Specificity comes from the folder**, not the title: `technical/hosting` does not need "infrastructure" in its title.
 
@@ -77,9 +77,10 @@ A page is a **spec of the norm** (how the thing is designed to be), not a meetin
 
 ## Section skeletons
 
-- **entity**: 1–3-sentence definition → "Where it lives / how we use it" → aspect sections → "Failure modes" (only if material exists) → "Open questions" → "Related" → footnote definitions (no heading).
+- **entity**: 1–3-sentence definition → "Where it lives / how we use it" → aspect sections → "Traps" (only if material exists) → "Open questions" → "Related" → footnote definitions (no heading).
 - **concept**: context intro → aspect sections → "Open questions" → "Related" → footnote definitions.
 - **decision**: see [[decision-template]].
+- **A worked entity page** with every section filled in is [[example-page]].
 - **`## Related`** is one flat bullet list mixing entities, concepts, and decisions: `- [[page]]: how it relates`, with a decision's state appended inline (`, **undecided**`) when worth flagging. A separate "Related decisions" heading is forbidden.
 
 ## Wikilinks

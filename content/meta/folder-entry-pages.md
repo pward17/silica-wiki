@@ -8,11 +8,11 @@ description: "What a folder's index.md must do: name the load-bearing pages, the
 ---
 
 
-The engine renders a folder page as the folder's `index.md` body followed by an auto-generated card list of every page (title, status, date, description) sorted by date. The entry page therefore **names the load-bearing pages, the traps, and a reading order, and never enumerates everything**:
+The engine renders a folder page as the folder's `index.md` body followed by an auto-generated list of every page in the folder (title, date and tags), sorted by date. The entry page therefore **names the load-bearing pages, the traps, and a reading order, and never enumerates everything**:
 
 - The exhaustive list is already machine-drawn and cannot fall behind; a hand-written list starts lying within weeks, and the lie sits right next to the true auto-list.
 - The build state is machine-drawn too: the badge under the title counts the pages' `implementation:` values, so the entry page states no build state of its own for the folder.
-- The machine cannot provide reading order (date sort teaches nothing: yesterday's stub outranks the most-linked page), cannot say what is load-bearing, and cannot flag traps (a stub card looks like any other card).
+- The machine cannot provide reading order (date sort teaches nothing: yesterday's stub outranks the most-linked page), cannot say what is load-bearing, and cannot flag traps (a stub looks like any other entry), and shows no status or description, so nothing in the list says which pages to trust.
 
 ## Operating rules
 
@@ -26,7 +26,7 @@ The engine renders a folder page as the folder's `index.md` body followed by an 
 ## Acceptance checks
 
 - Every link in the entry resolves.
-- Every page in the folder has a non-empty `description:`. The description is what represents unnamed pages in the auto-list, so a weak description is a folder defect.
+- Every page in the folder has a non-empty `description:`. It is the page's summary in search engines and link previews, and the entry page draws on it for the pages it names; a weak description is a folder defect.
 
 ## Related
 
