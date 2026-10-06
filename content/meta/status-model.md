@@ -3,7 +3,7 @@ title: "Status model"
 type: concept
 status: slop
 created: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-06
 description: "The three signals every page carries: status (how far along the text is, with slop for unread machine writing), implementation (whether the software exists), and approved_by (which humans have read it), plus the rules for moving between them."
 ---
 
@@ -36,6 +36,8 @@ One word, no compound values. Nuances like "behind a feature flag" go into the f
 - **`built`**: everything material on the page runs in production now.
 
 The field is required in the **implementation folders** and refused everywhere else: the wiki's own conventions, or a page about the organization, are neither built nor planned. The implementation folders are `technical/` and `product/` unless the project lists others under `implementationFolders` in `silica.config.json` at the wiki root.
+
+**A folder page has no value of its own.** A folder holds several things at different stages, so one word for all of them says little and goes stale the first time a page inside ships. Its badge instead counts the pages under it (for example "3 built, 1 partly built, 1 planned"), worked out on every build; superseded pages are left out. The lint refuses `implementation:` on a folder's `index.md`.
 
 **A `partial` page marks its unbuilt parts.** Every paragraph, bullet or section describing something that does not exist yet begins with `PLANNED:`. The lint fails a `partial` page with no marker, and a marker on a page that is all plan or all built.
 

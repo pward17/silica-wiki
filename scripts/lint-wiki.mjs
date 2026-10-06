@@ -128,13 +128,21 @@ for (const [file, fm] of parsed) {
     report(file, "description is missing or empty")
   }
   const slug = relative(CONTENT_DIR, file)
-  if (wantsImplementation(slug)) {
+  // A folder page describes several things at different stages, so the badge
+  // counts its pages' values instead; a hand-written one only goes stale.
+  const isFolderPage = basename(file) === "index.md"
+  if (wantsImplementation(slug) && !isFolderPage) {
     if (!IMPLEMENTATION_VALUES.includes(data.implementation)) {
       report(
         file,
         `implementation "${data.implementation}" is not one of: ${IMPLEMENTATION_VALUES.join(", ")}`,
       )
     }
+  } else if (data.implementation !== undefined && isFolderPage) {
+    report(
+      file,
+      "implementation is set on a folder page; its badge counts the values of the pages under it, so drop the field",
+    )
   } else if (data.implementation !== undefined) {
     report(
       file,
@@ -253,6 +261,12 @@ for (const [file, fm] of parsed) {
       `${planned.length} PLANNED: marker(s) on a page that is all plan: the marker says nothing the status does not`,
     )
   }
+  if (planned.length > 0 && data.implementation === undefined) {
+    report(
+      file,
+      `${planned.length} PLANNED: marker(s) on a page with no implementation value: the marker belongs on the partial page that describes the unbuilt part`,
+    )
+  }
 
   // Who is BUILDING something is bookkeeping: true for a fortnight, corrected by
   // nobody, misinforming thereafter. It belongs in the tracker, and who DECIDED it
@@ -318,7 +332,10 @@ for (const [file, fm] of parsed) {
 
   const lineCount = fm.orig.toString().split("\n").length
   if (lineCount > MAX_LINES) {
-    report(file, `${lineCount} lines; split the page so each file stays under ${MAX_LINES + 1} lines`)
+    report(
+      file,
+      `${lineCount} lines; split the page so each file stays under ${MAX_LINES + 1} lines`,
+    )
   }
 
   if (isRootIndex && data.type !== "index") {

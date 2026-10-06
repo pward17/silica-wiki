@@ -55,6 +55,30 @@ export const IMPLEMENTATION_LABELS: Record<WikiImplementation, string> = {
   built: "built",
 }
 
+// A folder page's slug is "index" (the root) or ends in "/index".
+export const isFolderSlug = (slug: string | undefined) =>
+  slug === "index" || (slug?.endsWith("/index") ?? false)
+
+// How many pages under a folder are planned, partly built and built. A folder
+// describes several things at different stages, so one hand-written value on
+// it said little and went stale; this count is worked out at build time from
+// the pages themselves. Folder pages and superseded pages are left out:
+// neither describes software that is running or coming.
+export function implementationSummary(
+  folderSlug: string,
+  pages: { slug?: string; frontmatter?: unknown }[],
+): Record<WikiImplementation, number> {
+  const prefix = folderSlug.slice(0, -"index".length)
+  const counts: Record<WikiImplementation, number> = { planned: 0, partial: 0, built: 0 }
+  for (const page of pages) {
+    if (!page.slug?.startsWith(prefix) || isFolderSlug(page.slug)) continue
+    if (getWikiStatus(page.frontmatter) === "superseded") continue
+    const value = getWikiImplementation(page.frontmatter)
+    if (value) counts[value]++
+  }
+  return counts
+}
+
 export interface Approval {
   who: string
   when?: string

@@ -4,26 +4,38 @@ import {
   IMPLEMENTATION_COLORS,
   IMPLEMENTATION_LABELS,
   IMPLEMENTATION_TINTS,
+  IMPLEMENTATION_VALUES,
   STATUS_COLORS,
   STATUS_INK,
   getApprovals,
   getWikiImplementation,
   getWikiStatus,
   getWikiType,
+  implementationSummary,
+  isFolderSlug,
 } from "../util/wiki"
 
 // Renders the wiki's three axes under the page title: the status chip (author
 // intent), the implementation chip (whether the thing exists yet) and the
 // approved_by line (human review of the text). All three are read-outs: a
 // human changes status and approved_by by editing the frontmatter and
-// committing, as content/meta/status-model.md describes.
-const StatusBadge: QuartzComponent = ({ fileData, displayClass }: QuartzComponentProps) => {
+// committing, as content/meta/status-model.md describes. A folder page gets a
+// count of its pages' implementation values in place of a value of its own.
+const StatusBadge: QuartzComponent = ({
+  fileData,
+  allFiles,
+  displayClass,
+}: QuartzComponentProps) => {
   const status = getWikiStatus(fileData.frontmatter)
   const implementation = getWikiImplementation(fileData.frontmatter)
   const pageType = getWikiType(fileData.frontmatter)
   const approvals = getApprovals(fileData.frontmatter)
+  const summary = isFolderSlug(fileData.slug)
+    ? implementationSummary(fileData.slug!, allFiles)
+    : undefined
+  const counted = summary ? IMPLEMENTATION_VALUES.filter((v) => summary[v] > 0).reverse() : []
 
-  if (!status && !implementation && !pageType && approvals.length === 0) {
+  if (!status && !implementation && !pageType && approvals.length === 0 && counted.length === 0) {
     return null
   }
 
@@ -48,6 +60,14 @@ const StatusBadge: QuartzComponent = ({ fileData, displayClass }: QuartzComponen
           {IMPLEMENTATION_LABELS[implementation]}
         </span>
       )}
+      {counted.map((value) => (
+        <span
+          class={`impl-chip impl-${value}`}
+          title={`Pages in this folder whose software is ${IMPLEMENTATION_LABELS[value]}`}
+        >
+          {summary![value]} {IMPLEMENTATION_LABELS[value]}
+        </span>
+      ))}
       <span class={`verification ${approvals.length > 0 ? "verified" : "not-verified"}`}>
         {verification}
       </span>

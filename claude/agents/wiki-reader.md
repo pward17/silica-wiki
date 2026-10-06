@@ -21,7 +21,7 @@ Every page carries signals in its frontmatter. Report them for each page you cit
 
 - `status:` **slop** means a machine wrote it and no human has read it: treat its claims as unverified. **draft** is in progress. **active** is reviewed current knowledge. **open** is an undecided decision. **superseded** is replaced (follow `superseded_by`).
 - `approved_by:` lists who reviewed it and when. Empty means not reviewed by a human.
-- `implementation:` says whether the software exists: **planned**, **partial** (unbuilt paragraphs start with `PLANNED:`), or **built**. It is a different question from status.
+- `implementation:` says whether the software exists: **planned**, **partial** (unbuilt paragraphs start with `PLANNED:`), or **built**. It is a different question from status. A folder page has no value of its own; its badge counts the pages under it.
 - `TODO(<name>): unverified` markers are claims the writer could not check.
 
 ## What to return

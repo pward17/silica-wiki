@@ -3,7 +3,7 @@ title: "Folder entry pages"
 type: concept
 status: slop
 created: 2026-10-02
-updated: 2026-10-02
+updated: 2026-10-06
 description: "What a folder's index.md must do: name the load-bearing pages, the traps, and a reading order, never enumerate everything."
 ---
 
@@ -11,6 +11,7 @@ description: "What a folder's index.md must do: name the load-bearing pages, the
 The engine renders a folder page as the folder's `index.md` body followed by an auto-generated card list of every page (title, status, date, description) sorted by date. The entry page therefore **names the load-bearing pages, the traps, and a reading order, and never enumerates everything**:
 
 - The exhaustive list is already machine-drawn and cannot fall behind; a hand-written list starts lying within weeks, and the lie sits right next to the true auto-list.
+- The build state is machine-drawn too: the badge under the title counts the pages' `implementation:` values, so the entry page states no build state of its own for the folder.
 - The machine cannot provide reading order (date sort teaches nothing: yesterday's stub outranks the most-linked page), cannot say what is load-bearing, and cannot flag traps (a stub card looks like any other card).
 
 ## Operating rules
