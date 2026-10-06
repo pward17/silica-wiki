@@ -1,6 +1,6 @@
-# Silica
+# Silica Wiki
 
-A wiki system for projects where coding agents write and humans verify. Silica is [Quartz v4](https://quartz.jzhao.xyz) plus:
+A wiki system for projects where coding agents write and humans verify. Silica Wiki is [Quartz v4](https://quartz.jzhao.xyz) plus:
 
 - **Three page signals** in the frontmatter, rendered as a badge under every title:
   - `status`: `slop` (machine-written, unread by any human), `draft`, `active`, `open` (undecided decision), `superseded`.
@@ -15,7 +15,7 @@ A wiki system for projects where coding agents write and humans verify. Silica i
 From the project's repo root, with the wiki going into `wiki/`:
 
 ```
-git remote add silica https://github.com/pward17/silica.git
+git remote add silica https://github.com/pward17/silica-wiki.git
 git fetch silica
 git read-tree --prefix=wiki/ -u silica/main
 git commit -m "Add the wiki from Silica"

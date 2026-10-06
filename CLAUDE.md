@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This folder is **Silica**, a reusable wiki system: Quartz v4 plus a page status model (`slop` / `implementation` / `approved_by`), a content lint, convention pages and Claude Code files. It is either the Silica repo itself or a copy of it that a project pulled into a subfolder (usually `wiki/`) with git's subtree merge. `README.md` covers adoption, updates and deployment.
+This folder is **Silica Wiki** (Silica for short), a reusable wiki system: Quartz v4 plus a page status model (`slop` / `implementation` / `approved_by`), a content lint, convention pages and Claude Code files. It is either the Silica repo itself or a copy of it that a project pulled into a subfolder (usually `wiki/`) with git's subtree merge. `README.md` covers adoption, updates and deployment.
 
 **Who owns what.** A project owns `content/` (except `content/meta/`), `silica.config.json` and the site settings in `quartz.config.ts`. Everything else here belongs to Silica: the engine, the badge, reader comments (`functions/`, `lib/`), `scripts/`, `content/meta/` and `claude/`. In a project, change those in the Silica repo and pull them in, never in place; a local edit comes back as a merge conflict on the next pull. In the Silica repo, `content/` holds only `meta/` and a placeholder `index.md`, never project content, and no `silica.config.json` is shipped.
 
