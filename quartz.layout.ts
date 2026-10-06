@@ -1,6 +1,15 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 
+// Superseded and dropped pages are left out of the sidebar; they still open
+// from search, links and their URL. The function is serialized to the
+// browser, so it must not reference anything outside itself.
+const explorer = Component.Explorer({
+  filterFn: (node) =>
+    node.slugSegment !== "tags" &&
+    !["superseded", "dropped"].includes((node.data as { status?: string } | null)?.status ?? ""),
+})
+
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
@@ -39,7 +48,7 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.ReaderMode() },
       ],
     }),
-    Component.Explorer(),
+    explorer,
   ],
   right: [
     Component.Graph(),
@@ -69,7 +78,7 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    explorer,
   ],
   right: [],
 }

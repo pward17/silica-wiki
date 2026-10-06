@@ -17,7 +17,7 @@ This page is the single source of the wiki's writing rules. It doubles as an aud
 title: "Page title"          # the H1 comes from here; pages never start with a markdown H1;
                              # aim for a noun phrase of 1-4 words, see "Titles" below
 type: entity | concept | decision | index
-status: slop | draft | active | superseded
+status: slop | draft | active | superseded | dropped
 implementation: planned | partial | built   # does the SOFTWARE exist? required under
                              # the implementation folders except on a folder's
                              # index.md (its badge counts its pages), refused elsewhere

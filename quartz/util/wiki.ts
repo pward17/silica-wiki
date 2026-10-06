@@ -6,7 +6,7 @@
 
 // Status is only how far the text can be trusted. Whether a decision is made
 // is read from the page itself (see isUndecided), so no status means "undecided".
-export const STATUS_VALUES = ["slop", "draft", "active", "superseded"] as const
+export const STATUS_VALUES = ["slop", "draft", "active", "superseded", "dropped"] as const
 export type WikiStatus = (typeof STATUS_VALUES)[number]
 
 export const TYPE_VALUES = ["entity", "concept", "decision", "index"] as const
@@ -19,6 +19,7 @@ export const STATUS_COLORS: Record<WikiStatus, string> = {
   draft: "#e9c46a",
   slop: "#c1121f",
   superseded: "#6f6f6f",
+  dropped: "#4f4f4f",
 }
 
 // Text colour for a filled chip. Only the yellow needs dark text.
@@ -27,6 +28,7 @@ export const STATUS_INK: Record<WikiStatus, string> = {
   draft: "#1b1b1b",
   slop: "#ffffff",
   superseded: "#ffffff",
+  dropped: "#ffffff",
 }
 
 export const IMPLEMENTATION_VALUES = ["planned", "partial", "built"] as const
@@ -55,6 +57,14 @@ export const IMPLEMENTATION_LABELS: Record<WikiImplementation, string> = {
   built: "built",
 }
 
+// Retired pages are kept for the record but out of the way: no sidebar entry,
+// no folder-list entry, no part in folder counts or the undecided chip. They
+// still open from search, from links and by URL.
+export const isRetired = (fm: unknown) => {
+  const status = getWikiStatus(fm)
+  return status === "superseded" || status === "dropped"
+}
+
 // A folder page's slug is "index" (the root) or ends in "/index".
 export const isFolderSlug = (slug: string | undefined) =>
   slug === "index" || (slug?.endsWith("/index") ?? false)
@@ -62,7 +72,7 @@ export const isFolderSlug = (slug: string | undefined) =>
 // How many pages under a folder are planned, partly built and built. A folder
 // describes several things at different stages, so one hand-written value on
 // it said little and went stale; this count is worked out at build time from
-// the pages themselves. Folder pages and superseded pages are left out:
+// the pages themselves. Folder pages and retired pages are left out:
 // neither describes software that is running or coming.
 export function implementationSummary(
   folderSlug: string,
@@ -72,7 +82,7 @@ export function implementationSummary(
   const counts: Record<WikiImplementation, number> = { planned: 0, partial: 0, built: 0 }
   for (const page of pages) {
     if (!page.slug?.startsWith(prefix) || isFolderSlug(page.slug)) continue
-    if (getWikiStatus(page.frontmatter) === "superseded") continue
+    if (isRetired(page.frontmatter)) continue
     const value = getWikiImplementation(page.frontmatter)
     if (value) counts[value]++
   }
@@ -85,11 +95,11 @@ export const UNDECIDED_INK = "#ffffff"
 
 // A decision is made when its page has a "## Chosen" section; until then the
 // page is a set of options and the chip says so. Worked out from the page, so
-// it cannot disagree with the body. A superseded decision is history, not a
-// question waiting on anyone.
+// it cannot disagree with the body. A superseded or dropped decision is
+// history, not a question waiting on anyone.
 export function isUndecided(frontmatter: unknown, headings: string[]) {
   if (getWikiType(frontmatter) !== "decision") return false
-  if (getWikiStatus(frontmatter) === "superseded") return false
+  if (isRetired(frontmatter)) return false
   return !headings.some((h) => /^Chosen\b/.test(h.trim()))
 }
 

@@ -19,6 +19,8 @@ export type ContentDetails = {
   richContent?: string
   date?: Date
   description?: string
+  // Silica: lets the client-side explorer leave out retired pages.
+  status?: string
 }
 
 interface Options {
@@ -115,6 +117,9 @@ export const ContentIndex: QuartzEmitterPlugin<Partial<Options>> = (opts) => {
               : undefined,
             date: date,
             description: file.data.description ?? "",
+            status: (file.data.frontmatter as Record<string, unknown> | undefined)?.status as
+              | string
+              | undefined,
           })
         }
       }

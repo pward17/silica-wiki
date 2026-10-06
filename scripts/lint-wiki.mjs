@@ -23,7 +23,7 @@ const MAX_LINES = config.maxLines ?? 999
 const MAX_TITLE_WORDS = config.maxTitleWords ?? 4
 const STRICT = process.argv.includes("--strict")
 
-const STATUS_VALUES = ["slop", "draft", "active", "superseded"]
+const STATUS_VALUES = ["slop", "draft", "active", "superseded", "dropped"]
 const TYPE_VALUES = ["entity", "concept", "decision", "index"]
 const IMPLEMENTATION_VALUES = ["planned", "partial", "built"]
 
@@ -62,6 +62,10 @@ const basenameOwners = new Map()
 
 // First pass: collect every resolvable wikilink target (basenames, folder slugs, aliases).
 const linkTargets = new Set()
+// Which file each target names, and which files link to each file, for the
+// decision hand-off check at the end.
+const targetFile = new Map()
+const linkedFrom = new Map()
 const parsed = new Map()
 for (const file of files) {
   let fm
@@ -90,12 +94,18 @@ for (const file of files) {
   linkTargets.add(name)
   const rel = relative(CONTENT_DIR, file).replace(/\.md$/, "").toLowerCase()
   linkTargets.add(rel)
+  targetFile.set(rel, file)
+  if (name !== "index") targetFile.set(name, file)
   if (name === "index") {
     linkTargets.add(rel.replace(/\/?index$/, ""))
+    targetFile.set(rel.replace(/\/?index$/, ""), file)
   }
   const aliases = fm.data?.aliases
   if (Array.isArray(aliases)) {
-    for (const alias of aliases) linkTargets.add(String(alias).toLowerCase())
+    for (const alias of aliases) {
+      linkTargets.add(String(alias).toLowerCase())
+      targetFile.set(String(alias).toLowerCase(), file)
+    }
   }
 }
 
@@ -225,6 +235,11 @@ for (const [file, fm] of parsed) {
     if (!linkTargets.has(target)) {
       report(file, `wikilink [[${match[1].trim()}]] does not resolve to any page`)
     }
+    const linked = targetFile.get(target)
+    if (linked && linked !== file) {
+      if (!linkedFrom.has(linked)) linkedFrom.set(linked, new Set())
+      linkedFrom.get(linked).add(file)
+    }
   }
 
   // Footnote definitions must carry a date (YYYY-MM-DD).
@@ -345,6 +360,25 @@ for (const [file, fm] of parsed) {
 
   if (isRootIndex && data.type !== "index") {
     report(file, "the root index.md must have type: index")
+  }
+}
+
+// The decision hand-off: once a choice is (partly) built, what exists is
+// described on an entity or concept page. A big decision keeps its own page
+// and that page cites it; a small one folds into that page and is set
+// superseded. Either way a live built decision is linked from a description.
+for (const [file, fm] of parsed) {
+  const data = fm.data ?? {}
+  if (data.type !== "decision" || ["superseded", "dropped"].includes(data.status)) continue
+  if (data.implementation !== "partial" && data.implementation !== "built") continue
+  const describers = [...(linkedFrom.get(file) ?? [])].filter((source) =>
+    ["entity", "concept"].includes(parsed.get(source)?.data?.type),
+  )
+  if (describers.length === 0) {
+    report(
+      file,
+      `decision is ${data.implementation} but no entity or concept page links to it: describe what was built on an entity or concept page that cites this decision, or fold a small decision into that page and set this one superseded`,
+    )
   }
 }
 
