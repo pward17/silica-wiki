@@ -1,7 +1,8 @@
 ---
 title: "Status model"
 type: concept
-status: slop
+status: active
+approved_by: [{ who: Patrick Ward, when: 2026-10-06 }]
 created: 2026-10-02
 updated: 2026-10-06
 description: "The three signals every page carries: status (how far along the text is, with slop for unread machine writing), implementation (whether the software exists), and approved_by (which humans have read it), the rules for moving between them, and the lifecycle from decision to description."

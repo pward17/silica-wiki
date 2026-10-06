@@ -1,7 +1,8 @@
 ---
 title: "Example page"
 type: entity
-status: slop
+status: draft
+approved_by: [{ who: Patrick Ward, when: 2026-10-06 }]
 created: 2026-10-06
 updated: 2026-10-06
 description: "A worked entity page about an invented website contact form, to copy from. It shows every part the format standard asks for: footnotes, an unverified marker, a trap, dated open questions and a Related list."
