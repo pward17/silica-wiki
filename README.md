@@ -30,9 +30,9 @@ Then:
 3. Replace `wiki/content/index.md` with the project's front page, and add the project's folders.
 4. Optionally create `wiki/silica.config.json` (Silica never ships one, so it never conflicts):
    ```json
-   { "implementationFolders": ["technical/", "product/"], "maxLines": 999 }
+   { "implementationFolders": ["technical/", "product/"], "maxLines": 999, "maxTitleWords": 4 }
    ```
-   `implementationFolders` are the folders whose pages must say whether their software is built. These are the defaults.
+   `implementationFolders` are the folders whose pages must say whether their software is built; `maxTitleWords` is the longest title the lint accepts. These are the defaults.
 
 ## Pull Silica updates into a project
 

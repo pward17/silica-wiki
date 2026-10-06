@@ -18,6 +18,8 @@ const config = existsSync(CONFIG_FILE) ? JSON.parse(readFileSync(CONFIG_FILE, "u
 
 // A page this long is several pages.
 const MAX_LINES = config.maxLines ?? 999
+// A title is a name, not a sentence; the detail belongs in the description.
+const MAX_TITLE_WORDS = config.maxTitleWords ?? 4
 const STRICT = process.argv.includes("--strict")
 
 const STATUS_VALUES = ["slop", "draft", "active", "open", "superseded"]
@@ -100,6 +102,14 @@ for (const [file, fm] of parsed) {
 
   if (typeof data.title !== "string" || data.title.trim() === "") {
     report(file, "title is missing (the rendered H1 comes from frontmatter, not the body)")
+  } else {
+    const words = data.title.trim().split(/\s+/).length
+    if (words > MAX_TITLE_WORDS) {
+      report(
+        file,
+        `title has ${words} words (limit ${MAX_TITLE_WORDS}); name the subject and move the detail to description`,
+      )
+    }
   }
   if (/^# /m.test(fm.content.replace(/```[\s\S]*?```/g, ""))) {
     report(file, "body starts a markdown H1; the H1 comes from frontmatter title")
