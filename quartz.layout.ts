@@ -53,6 +53,7 @@ export const defaultListPageLayout: PageLayout = {
   beforeBody: [
     Component.Breadcrumbs(),
     Component.ArticleTitle(),
+    Component.StatusBadge(),
     Component.PageComments(),
     Component.ContentMeta(),
   ],
