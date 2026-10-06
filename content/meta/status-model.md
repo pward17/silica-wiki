@@ -4,7 +4,7 @@ type: concept
 status: slop
 created: 2026-10-02
 updated: 2026-10-06
-description: "The three signals every page carries: status (how far along the text is, with slop for unread machine writing), implementation (whether the software exists), and approved_by (which humans have read it), plus the rules for moving between them."
+description: "The three signals every page carries: status (how far along the text is, with slop for unread machine writing), implementation (whether the software exists), and approved_by (which humans have read it), the rules for moving between them, and the lifecycle from decision to description."
 ---
 
 Every page carries three **orthogonal** signals. Never conflate them.
@@ -17,16 +17,19 @@ Every page carries three **orthogonal** signals. Never conflate them.
 
 The first two answer different questions. A page can be `slop` and `built`: live software documented by prose nobody has proofread. A page can be `active` and `planned`: a design somebody has read every line of, for something that does not exist yet. Both are ordinary.
 
-## The four statuses
+## The five statuses
 
 - **`slop`**: fresh LLM writing that no human has read. Every page an LLM creates or substantially rewrites starts here. Lifted only when a human has walked every line and takes responsibility for the text.
 - **`draft`**: in progress. Read with caution, and do not coordinate work on it as if it were settled.
 - **`active`**: current knowledge or an accepted decision. Safe to build on without re-asking.
 - **`superseded`**: replaced. `superseded_by:` is mandatory. The body is rewritten into what was proposed and why it was dropped.
+- **`dropped`**: no longer matters, and nothing replaces it: the feature was cut, the question went away. The first paragraph says why and when. No `superseded_by:`.
 
 One word, no compound values. Nuances like "behind a feature flag" go into the first body paragraph.
 
 **Whether a decision is made is not a status.** A decision page with no `## Chosen` section shows an `undecided` chip under its title, worked out from the page on every build; the status beside it still says whether a human has read the options. A retired `open` status once did both jobs, so a machine-written decision still waiting on a choice showed `open` and hid that nobody had read it. The lint refuses `status: open`.
+
+**Retired pages stay out of the way.** Superseded and dropped pages are left out of the sidebar, the folder lists and the folder build counts, so they do not clutter the wiki. They still open from search, from links and by their URL, so the record is there for whoever goes looking.
 
 ## Whether the thing exists
 
@@ -78,6 +81,33 @@ stateDiagram-v2
     slop --> active: human walks every line
     active --> superseded: newer page replaces it
     active --> slop: LLM rewrites
+    active --> dropped: no longer needed
+```
+
+## From decision to description
+
+Not every page starts as a decision: a page about something that already exists starts as an entity or a concept. But anything still to be chosen starts as a decision page, and it ends one of three ways: built and described elsewhere, replaced, or dropped.
+
+1. **Undecided.** The decision page lists options and has no `## Chosen` section, so its badge says `undecided`.
+2. **Chosen.** A human picks an option. The page gains `## Chosen:` and `## Why`, and the chip goes.
+3. **Built, and described elsewhere.** As the choice is built, the decision's `implementation:` moves to `partial` or `built`, and what now exists gets an entity page (one thing: a server, a service, a form) or a concept page (a practice that spans several). That page says what exists and how it works. What happens to the decision depends on its size:
+   - **A big decision keeps its own page**, and the entity or concept page cites it in one line for the why. Big means real alternatives that someone may want to revisit: the rejected options and the reasons are what they will need.
+   - **A small decision folds in.** Its choice and reasons become a short `## Why` section on the entity or concept page, and the decision page is set to `superseded` with `superseded_by:` pointing at that page.
+
+   The lint fails a decision that is `partial` or `built`, not retired, and linked from no entity or concept page.
+4. **Replaced.** If the answer changes, a new decision page supersedes the old one, and the entity or concept page is updated and cites the new decision.
+5. **Dropped.** If the question stops mattering, the decision is set to `dropped`, with a line on why.
+
+A page never changes type. A decision rewritten into a description would erase the options and reasons it is there to keep; the description goes on its own page. That page is new like any other: it starts at `slop` and earns its status on its own text, and reviewing one page does not vouch for the other.
+
+```mermaid
+flowchart LR
+    U["Decision, undecided"] -->|a human chooses| C["Decision, chosen"]
+    C -->|built, big decision| E["Entity or concept page cites the decision"]
+    C -->|built, small decision| F["Folded into the entity or concept page; decision superseded"]
+    C -->|the answer changes| S["Decision superseded by a new decision"]
+    U -->|no longer matters| D["Decision dropped"]
+    C -->|no longer matters| D
 ```
 
 ## Open questions
@@ -87,4 +117,4 @@ stateDiagram-v2
 ## Related
 
 - [[format-standard]]: the page-writing spec this model plugs into.
-- [[decision-template]]: how a decision page goes from undecided to chosen.
+- [[decision-template]]: how a decision page goes from undecided to chosen, and what it hands off once built.

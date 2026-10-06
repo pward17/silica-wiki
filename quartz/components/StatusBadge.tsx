@@ -131,6 +131,7 @@ StatusBadge.css = `
 .status-chip.status-draft { --chip: ${STATUS_COLORS.draft}; --chip-ink: ${STATUS_INK.draft}; }
 .status-chip.status-slop { --chip: ${STATUS_COLORS.slop}; --chip-ink: ${STATUS_INK.slop}; }
 .status-chip.status-superseded { --chip: ${STATUS_COLORS.superseded}; --chip-ink: ${STATUS_INK.superseded}; }
+.status-chip.status-dropped { --chip: ${STATUS_COLORS.dropped}; --chip-ink: ${STATUS_INK.dropped}; }
 
 /* Filled like a status, because it is a call to act: somebody has to decide. */
 .status-badge .undecided-chip {

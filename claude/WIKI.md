@@ -16,6 +16,8 @@ The wiki lives in `{{WIKI}}/`, a Quartz site built on Silica. Pages are Markdown
 
 Pages in the implementation folders (`technical/` and `product/` unless `{{WIKI}}/silica.config.json` lists others) also carry `implementation: planned | partial | built` (except a folder's `index.md`, whose badge counts the pages under it): whether the software exists, a different question from whether the text is trustworthy. A `slop` page about a live service is `built`; an `active` design for something unbuilt is `planned`. Decide it by reading the code, never by reading the page. On a `partial` page every unbuilt paragraph starts with `PLANNED:`.
 
+A page never changes type. Once a decision's choice is built, what exists gets an entity or concept page: a big decision stays and that page cites it, a small one folds into that page and is set `superseded`. A decision that stops mattering is set `dropped`. The lifecycle is in `{{WIKI}}/content/meta/status-model.md`.
+
 When the code and an `active` page disagree, say so rather than quietly picking one.
 
 ## Open questions are content
@@ -39,7 +41,7 @@ The wiki is only worth reading if it says what is true, including the gaps. An u
 
 The full spec and audit checklist is `{{WIKI}}/content/meta/format-standard.md`. The digest:
 
-- Frontmatter: `title` (the rendered H1; pages never start with their own `#`; aim for a noun phrase of 1-4 words, preferably 3 or fewer, not a sentence: the detail goes in `description`; a strong preference, the lint warns but does not fail), `type` (entity/concept/decision/index), `status` (slop/draft/active/superseded; an undecided decision is simply one with no `## Chosen` section, and its badge says so), `implementation` (planned/partial/built, implementation folders only), `created`, `updated`, `description` (1-3 factual sentences, never empty), optional `approved_by`, `aliases`; `superseded_by` required iff superseded.
+- Frontmatter: `title` (the rendered H1; pages never start with their own `#`; aim for a noun phrase of 1-4 words, preferably 3 or fewer, not a sentence: the detail goes in `description`; a strong preference, the lint warns but does not fail), `type` (entity/concept/decision/index), `status` (slop/draft/active/superseded/dropped; an undecided decision is simply one with no `## Chosen` section, and its badge says so), `implementation` (planned/partial/built, implementation folders only), `created`, `updated`, `description` (1-3 factual sentences, never empty), optional `approved_by`, `aliases`; `superseded_by` required iff superseded.
 - Pages are specs of the current norm, not meeting digests. Provenance goes in dated footnotes (`[^slug]: Title, YYYY-MM-DD, URL : comment.`). No ticket numbers, commit SHAs or branch names in page bodies.
 - A person's name in the body is either the subject or a mistake: who decided goes in a footnote, who is building goes in the tracker.
 - Wikilinks are bare filenames (`[[page]]`), alias form in prose; a folder page is linked by path (`[[technical/index|technical]]`). One flat `## Related` list.

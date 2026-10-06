@@ -17,7 +17,7 @@ Create a decision page **at the first doubt**, not at resolution. Doubts are con
 ```markdown
 ---
 type: decision
-status: slop | draft | active | superseded
+status: slop | draft | active | superseded | dropped
 updated: YYYY-MM-DD
 created: YYYY-MM-DD
 description: "..."
@@ -55,6 +55,7 @@ One-line description (skip if the name suffices).
 - Decision pages are **append-only**: a revision adds a `### (C)` option or a note line ("Initial LLM recommendation: B. Curator rejected it and chose A."), never rewrites history.
 - Decisions are about *where responsibility lives in the system*, not how code is written. Reframe implementation questions as "at which stage does the responsibility for X live".
 - The decision page is the single source of rationale; other pages cite it in one line instead of duplicating the "why".
+- **A decision never becomes the description of what was built.** Once the choice is built, what exists gets an entity or concept page. A big decision stays and that page cites it; a small one folds into that page's `## Why` and is set `superseded`. A decision that stops mattering is set `dropped`. The full lifecycle is in [[status-model]].
 - On a decision page, the revision date and actor are content (the exception to the no-bookkeeping rule); ticket handles still go to footnotes.
 
 ## Related

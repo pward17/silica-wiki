@@ -9,6 +9,7 @@ import { QuartzPluginData } from "../../plugins/vfile"
 import { ComponentChildren } from "preact"
 import { concatenateResources } from "../../util/resources"
 import { trieFromAllFiles } from "../../util/ctx"
+import { isRetired } from "../../util/wiki"
 
 interface FolderContentOptions {
   /**
@@ -87,7 +88,9 @@ export default ((opts?: Partial<FolderContentOptions>) => {
             }
           }
         })
-        .filter((page) => page !== undefined) ?? []
+        .filter((page) => page !== undefined)
+        // Silica: superseded and dropped pages stay reachable but unlisted.
+        .filter((page) => !isRetired(page.frontmatter)) ?? []
     const cssClasses: string[] = fileData.frontmatter?.cssclasses ?? []
     const classes = cssClasses.join(" ")
     const listProps = {
