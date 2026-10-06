@@ -32,7 +32,7 @@ Then:
    ```json
    { "implementationFolders": ["technical/", "product/"], "maxLines": 999, "maxTitleWords": 4 }
    ```
-   `implementationFolders` are the folders whose pages must say whether their software is built; `maxTitleWords` is the longest title the lint accepts. These are the defaults.
+   `implementationFolders` are the folders whose pages must say whether their software is built; `maxTitleWords` is the title length above which the lint warns (it never fails on it). These are the defaults.
 
 ## Pull Silica updates into a project
 
