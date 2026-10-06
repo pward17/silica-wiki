@@ -112,7 +112,7 @@ flowchart LR
 
 ## Open questions
 
-- 2026-10-02: Promotion is a hand edit of the frontmatter. Whether to build an on-page status selector, as some Quartz wikis have, depends on where the wiki is hosted and who edits it without git. Nobody has decided.
+- 2026-10-02: Promotion is a hand edit of the frontmatter. Whether to build an on-page status selector depends on where the wiki is hosted and who edits it without git. Nobody has decided.
 
 ## Related
 
