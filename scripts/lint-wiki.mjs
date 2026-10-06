@@ -23,7 +23,7 @@ const MAX_LINES = config.maxLines ?? 999
 const MAX_TITLE_WORDS = config.maxTitleWords ?? 4
 const STRICT = process.argv.includes("--strict")
 
-const STATUS_VALUES = ["slop", "draft", "active", "open", "superseded"]
+const STATUS_VALUES = ["slop", "draft", "active", "superseded"]
 const TYPE_VALUES = ["entity", "concept", "decision", "index"]
 const IMPLEMENTATION_VALUES = ["planned", "partial", "built"]
 
@@ -118,7 +118,12 @@ for (const [file, fm] of parsed) {
   if (/^# /m.test(fm.content.replace(/```[\s\S]*?```/g, ""))) {
     report(file, "body starts a markdown H1; the H1 comes from frontmatter title")
   }
-  if (!STATUS_VALUES.includes(data.status)) {
+  if (data.status === "open") {
+    report(
+      file,
+      'status "open" is retired: status says how far the text can be trusted (slop until a human reads it), and the undecided chip comes from the page having no "## Chosen" section',
+    )
+  } else if (!STATUS_VALUES.includes(data.status)) {
     report(file, `status "${data.status}" is not one of: ${STATUS_VALUES.join(", ")}`)
   }
   if (!TYPE_VALUES.includes(data.type)) {
@@ -292,7 +297,7 @@ for (const [file, fm] of parsed) {
   // They are welcome on a draft and disqualifying on a page claiming to be
   // current knowledge, which is what makes the honest option cheap to take.
   const unverified = [...body.matchAll(/TODO\(([^)]*)\):\s*unverified/g)]
-  if (unverified.length > 0 && (data.status === "active" || data.status === "open")) {
+  if (unverified.length > 0 && data.status === "active") {
     report(
       file,
       `${unverified.length} unverified marker(s) on a ${data.status} page: verify the claim or move the page back to draft`,

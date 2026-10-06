@@ -4,7 +4,9 @@
 // implementation is whether the thing the page describes exists yet.
 // The rules behind them live in content/meta/status-model.md.
 
-export const STATUS_VALUES = ["slop", "draft", "active", "open", "superseded"] as const
+// Status is only how far the text can be trusted. Whether a decision is made
+// is read from the page itself (see isUndecided), so no status means "undecided".
+export const STATUS_VALUES = ["slop", "draft", "active", "superseded"] as const
 export type WikiStatus = (typeof STATUS_VALUES)[number]
 
 export const TYPE_VALUES = ["entity", "concept", "decision", "index"] as const
@@ -15,7 +17,6 @@ export type WikiType = (typeof TYPE_VALUES)[number]
 export const STATUS_COLORS: Record<WikiStatus, string> = {
   active: "#1e7d72",
   draft: "#e9c46a",
-  open: "#c8502f",
   slop: "#c1121f",
   superseded: "#6f6f6f",
 }
@@ -24,7 +25,6 @@ export const STATUS_COLORS: Record<WikiStatus, string> = {
 export const STATUS_INK: Record<WikiStatus, string> = {
   active: "#ffffff",
   draft: "#1b1b1b",
-  open: "#ffffff",
   slop: "#ffffff",
   superseded: "#ffffff",
 }
@@ -77,6 +77,20 @@ export function implementationSummary(
     if (value) counts[value]++
   }
   return counts
+}
+
+// The undecided chip: the colour that used to mark the retired "open" status.
+export const UNDECIDED_COLOR = "#c8502f"
+export const UNDECIDED_INK = "#ffffff"
+
+// A decision is made when its page has a "## Chosen" section; until then the
+// page is a set of options and the chip says so. Worked out from the page, so
+// it cannot disagree with the body. A superseded decision is history, not a
+// question waiting on anyone.
+export function isUndecided(frontmatter: unknown, headings: string[]) {
+  if (getWikiType(frontmatter) !== "decision") return false
+  if (getWikiStatus(frontmatter) === "superseded") return false
+  return !headings.some((h) => /^Chosen\b/.test(h.trim()))
 }
 
 export interface Approval {

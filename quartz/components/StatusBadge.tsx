@@ -7,13 +7,29 @@ import {
   IMPLEMENTATION_VALUES,
   STATUS_COLORS,
   STATUS_INK,
+  UNDECIDED_COLOR,
+  UNDECIDED_INK,
   getApprovals,
   getWikiImplementation,
   getWikiStatus,
   getWikiType,
   implementationSummary,
   isFolderSlug,
+  isUndecided,
 } from "../util/wiki"
+import { Root, Element } from "hast"
+import { visit } from "unist-util-visit"
+import { toString } from "hast-util-to-string"
+
+// The text of every h2 on the page, which is where a decision's "Chosen" sits.
+function h2Texts(tree: Root | undefined): string[] {
+  const texts: string[] = []
+  if (!tree) return texts
+  visit(tree, "element", (node: Element) => {
+    if (node.tagName === "h2") texts.push(toString(node))
+  })
+  return texts
+}
 
 // Renders the wiki's three axes under the page title: the status chip (author
 // intent), the implementation chip (whether the thing exists yet) and the
@@ -24,12 +40,14 @@ import {
 const StatusBadge: QuartzComponent = ({
   fileData,
   allFiles,
+  tree,
   displayClass,
 }: QuartzComponentProps) => {
   const status = getWikiStatus(fileData.frontmatter)
   const implementation = getWikiImplementation(fileData.frontmatter)
   const pageType = getWikiType(fileData.frontmatter)
   const approvals = getApprovals(fileData.frontmatter)
+  const undecided = isUndecided(fileData.frontmatter, h2Texts(tree as Root))
   const summary = isFolderSlug(fileData.slug)
     ? implementationSummary(fileData.slug!, allFiles)
     : undefined
@@ -50,6 +68,11 @@ const StatusBadge: QuartzComponent = ({
       {status && (
         <span class={`status-chip status-${status}`} title="How far along the text is">
           {status}
+        </span>
+      )}
+      {undecided && (
+        <span class="undecided-chip" title="No option is chosen yet: this decision needs making">
+          undecided
         </span>
       )}
       {implementation && (
@@ -106,9 +129,15 @@ StatusBadge.css = `
 
 .status-chip.status-active { --chip: ${STATUS_COLORS.active}; --chip-ink: ${STATUS_INK.active}; }
 .status-chip.status-draft { --chip: ${STATUS_COLORS.draft}; --chip-ink: ${STATUS_INK.draft}; }
-.status-chip.status-open { --chip: ${STATUS_COLORS.open}; --chip-ink: ${STATUS_INK.open}; }
 .status-chip.status-slop { --chip: ${STATUS_COLORS.slop}; --chip-ink: ${STATUS_INK.slop}; }
 .status-chip.status-superseded { --chip: ${STATUS_COLORS.superseded}; --chip-ink: ${STATUS_INK.superseded}; }
+
+/* Filled like a status, because it is a call to act: somebody has to decide. */
+.status-badge .undecided-chip {
+  background: ${UNDECIDED_COLOR};
+  color: ${UNDECIDED_INK};
+  font-weight: 700;
+}
 
 /* Outlined and washed, so it never reads as part of the status label. The
    text stays var(--dark), which keeps any accent legible on both themes. */

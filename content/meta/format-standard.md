@@ -17,7 +17,7 @@ This page is the single source of the wiki's writing rules. It doubles as an aud
 title: "Page title"          # the H1 comes from here; pages never start with a markdown H1;
                              # aim for a noun phrase of 1-4 words, see "Titles" below
 type: entity | concept | decision | index
-status: slop | draft | active | open | superseded
+status: slop | draft | active | superseded
 implementation: planned | partial | built   # does the SOFTWARE exist? required under
                              # the implementation folders except on a folder's
                              # index.md (its badge counts its pages), refused elsewhere
@@ -80,7 +80,7 @@ A page is a **spec of the norm** (how the thing is designed to be), not a meetin
 - **entity**: 1–3-sentence definition → "Where it lives / how we use it" → aspect sections → "Failure modes" (only if material exists) → "Open questions" → "Related" → footnote definitions (no heading).
 - **concept**: context intro → aspect sections → "Open questions" → "Related" → footnote definitions.
 - **decision**: see [[decision-template]].
-- **`## Related`** is one flat bullet list mixing entities, concepts, and decisions: `- [[page]]: how it relates`, with decision status appended inline (`, **open**`) when worth flagging. A separate "Related decisions" heading is forbidden.
+- **`## Related`** is one flat bullet list mixing entities, concepts, and decisions: `- [[page]]: how it relates`, with a decision's state appended inline (`, **undecided**`) when worth flagging. A separate "Related decisions" heading is forbidden.
 
 ## Wikilinks
 
