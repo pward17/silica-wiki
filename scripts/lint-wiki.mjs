@@ -19,6 +19,7 @@ const config = existsSync(CONFIG_FILE) ? JSON.parse(readFileSync(CONFIG_FILE, "u
 // A page this long is several pages.
 const MAX_LINES = config.maxLines ?? 999
 // A title is a name, not a sentence; the detail belongs in the description.
+// A preference, not a rule: a longer title warns but never fails --strict.
 const MAX_TITLE_WORDS = config.maxTitleWords ?? 4
 const STRICT = process.argv.includes("--strict")
 
@@ -53,6 +54,9 @@ function walk(dir) {
 const files = walk(CONTENT_DIR)
 const problems = []
 const report = (file, message) => problems.push({ file: relative(CONTENT_DIR, file), message })
+// Warnings are printed but never change the exit code.
+const warnings = []
+const warn = (file, message) => warnings.push({ file: relative(CONTENT_DIR, file), message })
 
 const basenameOwners = new Map()
 
@@ -105,9 +109,9 @@ for (const [file, fm] of parsed) {
   } else {
     const words = data.title.trim().split(/\s+/).length
     if (words > MAX_TITLE_WORDS) {
-      report(
+      warn(
         file,
-        `title has ${words} words (limit ${MAX_TITLE_WORDS}); name the subject and move the detail to description`,
+        `title has ${words} words (aim for ${MAX_TITLE_WORDS} or fewer); name the subject and move the detail to description`,
       )
     }
   }
@@ -320,6 +324,10 @@ for (const [file, fm] of parsed) {
   if (isRootIndex && data.type !== "index") {
     report(file, "the root index.md must have type: index")
   }
+}
+
+for (const { file, message } of warnings) {
+  console.log(`  warning: ${file}: ${message}`)
 }
 
 if (problems.length === 0) {

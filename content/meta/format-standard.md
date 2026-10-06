@@ -15,7 +15,7 @@ This page is the single source of the wiki's writing rules. It doubles as an aud
 ```yaml
 ---
 title: "Page title"          # the H1 comes from here; pages never start with a markdown H1;
-                             # a noun phrase of 1-4 words, see "Titles" below
+                             # aim for a noun phrase of 1-4 words, see "Titles" below
 type: entity | concept | decision | index
 status: slop | draft | active | open | superseded
 implementation: planned | partial | built   # does the SOFTWARE exist? required under
@@ -36,13 +36,13 @@ The three axes, and why `status` and `implementation` are never the same questio
 
 ## Titles
 
-A title is a name, not a sentence: a noun phrase of one to four words, three or fewer where possible (`Hosting`, `Client previews`, `Contact form`). It names what the page is about; what the page *says* about it goes in `description:` and the first paragraph. Sentence case, no trailing full stop, no verb clause.
+A title is a name, not a sentence. Aim for a noun phrase of one to four words, three or fewer where possible (`Hosting`, `Client previews`, `Contact form`). It names what the page is about; what the page *says* about it goes in `description:` and the first paragraph. Sentence case, no trailing full stop, no verb clause. This is a strong preference, not a hard rule: a longer title is fine on the rare page where no short name is clear, but that is the exception, not the habit.
 
 - **Wrong:** `Sites run on one Hetzner box in Ashburn with single-node k3s`. **Right:** `Hosting`, with the box, the region and k3s in the description.
 - **Decision pages too.** The title names the question (`Hosting provider`, `Auth method`), not the answer: the answer lives in `## Chosen:` and can change by supersession without a rename.
 - **Specificity comes from the folder**, not the title: `technical/hosting` does not need "infrastructure" in its title.
 
-The lint fails a title of more than four words (`maxTitleWords` in `silica.config.json` changes the limit).
+The lint warns on a title of more than four words but does not fail (`maxTitleWords` in `silica.config.json` changes the threshold).
 
 ## Page types
 
@@ -129,7 +129,7 @@ These are density signals, not proof of authorship: a single flagged word means 
 
 ## Audit checklist (forbidden patterns)
 
-Fact without citation · footnote without a date · a file of 1000 lines or more · inline URLs in the body · bookkeeping in the body · an assignee named in the body ("X is building Y") · a decider or a discoverer named in body prose where a footnote already carries them · build state narrated in prose that `implementation:` already carries · a `## Sources` heading · `(see [[X]])` · date-anchored narrative · the page narrating its own revisions ("the call left X, now Y", "that is gone") · divergence written as prose or a footnote · transient incidents or volatile counters on pages · copying data out of tracker/chat/analytics instead of referencing it · emoji and checkmark noise · horizontal rules as decoration · slogan headings · long verbatim quotes without necessity · retelling sources in full · rewriting a page without reading its pending review comments first · `status: superseded` without `superseded_by` · an empty `description:` · a title of more than four words, or a title that is a sentence · a missing `implementation:` in an implementation folder · an `implementation:` anywhere else · `implementation: partial` with no `PLANNED:` marker saying which parts · a `PLANNED:` marker on a page that is all plan or all built · a shipped-but-broken control written up as unbuilt instead of as a trap · an `implementation:` carried unchanged through an edit that the code has since overtaken.
+Fact without citation · footnote without a date · a file of 1000 lines or more · inline URLs in the body · bookkeeping in the body · an assignee named in the body ("X is building Y") · a decider or a discoverer named in body prose where a footnote already carries them · build state narrated in prose that `implementation:` already carries · a `## Sources` heading · `(see [[X]])` · date-anchored narrative · the page narrating its own revisions ("the call left X, now Y", "that is gone") · divergence written as prose or a footnote · transient incidents or volatile counters on pages · copying data out of tracker/chat/analytics instead of referencing it · emoji and checkmark noise · horizontal rules as decoration · slogan headings · long verbatim quotes without necessity · retelling sources in full · rewriting a page without reading its pending review comments first · `status: superseded` without `superseded_by` · an empty `description:` · a title that is a sentence · a missing `implementation:` in an implementation folder · an `implementation:` anywhere else · `implementation: partial` with no `PLANNED:` marker saying which parts · a `PLANNED:` marker on a page that is all plan or all built · a shipped-but-broken control written up as unbuilt instead of as a trap · an `implementation:` carried unchanged through an edit that the code has since overtaken.
 
 ## Related
 
