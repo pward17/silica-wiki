@@ -1,7 +1,8 @@
 ---
 title: "Format standard"
 type: concept
-status: slop
+status: active
+approved_by: [{ who: Patrick Ward, when: 2026-10-06 }]
 created: 2026-10-02
 updated: 2026-10-06
 description: "The operational spec for writing wiki pages: frontmatter contract, page types, editorial doctrine, footnotes, wikilinks, diagrams, and the audit checklist of forbidden patterns."
@@ -119,7 +120,7 @@ How they are written:
 
 ## Unverified claims
 
-A claim you could not check does not go on the page as prose. Write `TODO(<name>): unverified` in its place, state what is actually known next to it, and move on. The marker is cheap, visible, and greppable, and a page carrying one cannot be promoted past `draft`: the lint fails it on `active` and `open`. This is deliberate, because the alternative is a confident invented specific that a reader or an agent will act on.
+A claim you could not check does not go on the page as prose. Write `TODO(<name>): unverified` in its place, state what is actually known next to it, and move on. The marker is cheap, visible, and greppable, and a page carrying one cannot be promoted past `draft`: the lint fails it on `active`. This is deliberate, because the alternative is a confident invented specific that a reader or an agent will act on.
 
 Never invent a limit, a path, a field name, a number or a date to fill a gap. An honest gap costs a reader a question; a fabricated fact costs them a debugging session.
 

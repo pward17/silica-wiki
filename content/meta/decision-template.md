@@ -1,7 +1,8 @@
 ---
 title: "Decision template"
 type: concept
-status: slop
+status: active
+approved_by: [{ who: Patrick Ward, when: 2026-10-06 }]
 created: 2026-10-02
 updated: 2026-10-06
 description: "Copyable skeleton and rules for decision pages: the title names the question, lettered options, the chosen option in its own section, append-only revisions."

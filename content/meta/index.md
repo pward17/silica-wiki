@@ -1,7 +1,8 @@
 ---
 title: "Meta"
 type: index
-status: slop
+status: active
+approved_by: [{ who: Patrick Ward, when: 2026-10-06 }]
 created: 2026-10-02
 updated: 2026-10-06
 description: "Map of the wiki's own conventions: status model, format standard, decision template, folder entry pages and a worked example page."

@@ -1,7 +1,8 @@
 ---
 title: "Folder entry pages"
 type: concept
-status: slop
+status: active
+approved_by: [{ who: Patrick Ward, when: 2026-10-06 }]
 created: 2026-10-02
 updated: 2026-10-06
 description: "What a folder's index.md must do: name the load-bearing pages, the traps, and a reading order, never enumerate everything."
