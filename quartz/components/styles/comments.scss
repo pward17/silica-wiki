@@ -163,6 +163,43 @@
   cursor: default;
 }
 
+/* Dictation. Red and pulsing while the microphone is on, so nobody talks
+   into a box that is not listening, or forgets it is. */
+.wiki-comment-mic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--lightgray);
+  border-radius: 4px;
+  padding: 0 0.45rem;
+  color: var(--darkgray);
+  cursor: pointer;
+}
+
+.wiki-comment-mic:hover {
+  border-color: var(--gray);
+}
+
+.wiki-comment-mic.wiki-comment-mic-on {
+  background: #d93025;
+  border-color: #d93025;
+  color: #fff;
+  animation: wiki-comment-mic-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes wiki-comment-mic-pulse {
+  50% {
+    box-shadow: 0 0 0 4px rgba(217, 48, 37, 0.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wiki-comment-mic.wiki-comment-mic-on {
+    animation: none;
+  }
+}
+
 .wiki-comment-done {
   margin: 0;
   font-size: 0.9rem;

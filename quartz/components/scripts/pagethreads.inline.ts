@@ -18,6 +18,7 @@ import {
   setCount,
   wrapRange,
 } from "./threads/anchor"
+import { micButton, stopDictation } from "./threads/dictation"
 
 interface ReplyTarget {
   id: number
@@ -209,6 +210,8 @@ function controls(
   resolve.type = "button"
   const reply = el("button", "wiki-comment-send", "Reply")
   reply.type = "button"
+  const mic = micButton(textarea, (message) => (status.textContent = message))
+  if (mic) buttons.append(mic)
   buttons.append(resolve, reply)
   actions.append(status, buttons)
   root.append(chip, textarea, actions)
@@ -253,6 +256,7 @@ function controls(
   textarea.addEventListener("blur", () => setTimeout(close, 150))
 
   const send = async () => {
+    stopDictation()
     const text = textarea.value.trim()
     if (!text) {
       status.textContent = "Write something first."
