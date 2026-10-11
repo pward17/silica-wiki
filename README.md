@@ -6,6 +6,7 @@ A wiki system for projects where coding agents write and humans verify. Silica W
   - `status`: `slop` (machine-written, unread by any human), `draft`, `active`, `superseded`, `dropped`. Superseded and dropped pages stay reachable but leave the sidebar and folder lists. A decision page with no `## Chosen` section also shows an `undecided` chip, worked out from the page.
   - `implementation`: `planned`, `partial`, `built`: whether the software the page describes exists. A folder page has none of its own; its badge counts the pages under it.
   - `approved_by`: which humans read the page, and when. Only humans write it.
+- **What changed:** a button under each title opens the page's last change, read from git when the site is built: the lines added and removed, with the changed words marked. Commits that only touch the frontmatter (a promotion, an approval) are listed as notes above it. It needs the repository's history on the build machine; a shallow clone shows no button.
 - **A lint** (`scripts/lint-wiki.mjs`) enforcing the page contract: frontmatter, resolvable wikilinks, dated footnotes and open questions, `PLANNED:` markers, no approvals on slop, a built decision described on an entity or concept page, a line limit.
 - **Meta pages** (`content/meta/`) documenting the conventions: status model, format standard, decision template, folder entry pages.
 - **Claude Code files** (`claude/`): the `wiki-writer` skill, the `wiki-reader` and `wiki-writer` subagents, and the wiki rules for a project's `CLAUDE.md`.
@@ -46,7 +47,7 @@ The project owns `wiki/content/` (except `content/meta/`), `wiki/silica.config.j
 
 ## Deploy on Cloudflare Pages
 
-Root directory `wiki`, build command `npx quartz build`, output directory `public`, build watch paths `wiki/*`. Node 22 comes from `.node-version`. Gate the site with Cloudflare Access on both the custom domain and the `*.pages.dev` address.
+Root directory `wiki`, build command `git fetch --unshallow || true; npx quartz build`, output directory `public`, build watch paths `wiki/*`. Node 22 comes from `.node-version`. Pages clones only the latest commit, and without the fetch every page shows its build date as its last change and no What changed button; a GitHub Actions deploy needs `fetch-depth: 0` on its checkout for the same reason. Gate the site with Cloudflare Access on both the custom domain and the `*.pages.dev` address.
 
 ## Reader comments
 
