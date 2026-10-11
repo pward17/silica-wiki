@@ -264,7 +264,8 @@ function onDocumentClick(e: MouseEvent) {
   const panel = document.getElementById(PANEL_ID)
   const target = e.target as HTMLElement | null
   if (!panel || !target || !document.contains(target)) return
-  if (panel.contains(target) || target.id === BUTTON_ID) return
+  // The page's Comment button opens the panel on this same click.
+  if (panel.contains(target) || target.closest(`#${BUTTON_ID}, #wiki-comment-page`)) return
   const draft = panel.querySelector<HTMLTextAreaElement>(".wiki-comment-text")?.value.trim()
   if (draft) return
   closePanel()
