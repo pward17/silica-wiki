@@ -3,6 +3,8 @@
 // login step here and no identity in the payload: functions/api/comment.js
 // takes the email from Access.
 
+import { micButton, stopDictation } from "./threads/dictation"
+
 const BUTTON_ID = "wiki-comment-button"
 // A speech bubble with a plus: leave a new comment here.
 const COMMENT_ICON =
@@ -57,6 +59,7 @@ function clearMarks() {
 }
 
 function closePanel() {
+  stopDictation()
   document.getElementById(PANEL_ID)?.remove()
   clearMarks()
   anchoredRange = null
@@ -133,6 +136,8 @@ function openPanel(quote: string, range: Range | null) {
   const textarea = panel.querySelector<HTMLTextAreaElement>(".wiki-comment-text")!
   const status = panel.querySelector<HTMLElement>(".wiki-comment-status")!
   const send = panel.querySelector<HTMLButtonElement>(".wiki-comment-send")!
+  const mic = micButton(textarea, (message) => (status.textContent = message))
+  if (mic) send.before(mic)
   textarea.focus()
   panel.querySelector(".wiki-comment-close")!.addEventListener("click", closePanel)
 
@@ -140,6 +145,7 @@ function openPanel(quote: string, range: Range | null) {
   const lines = lineRange(range)
 
   const submit = async () => {
+    stopDictation()
     const comment = textarea.value.trim()
     if (!comment) {
       status.textContent = "Write something first."

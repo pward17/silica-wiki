@@ -50,7 +50,7 @@ Root directory `wiki`, build command `npx quartz build`, output directory `publi
 
 ## Reader comments
 
-Readers select text on a page and leave a comment; it becomes a GitHub issue labelled `wiki-comment`, highlighted on the page with replies and a Resolve button beside it. Cloudflare Access identifies the reader, so nobody needs a GitHub account. The server side is Cloudflare Pages Functions in `functions/api/` (helpers in `lib/comments/`), deployed with the site whenever Pages builds or deploys from the wiki folder. Without the settings below the endpoints answer 503 and pages show no comment controls.
+Readers select text on a page and leave a comment; it becomes a GitHub issue labelled `wiki-comment`, highlighted on the page with replies and a Resolve button beside it. Cloudflare Access identifies the reader, so nobody needs a GitHub account. In browsers with speech recognition (Chrome, Edge, Safari), a microphone button beside Send dictates into the comment box; Chrome and Edge send the audio to their vendor's recognition service, and Firefox shows no button. The server side is Cloudflare Pages Functions in `functions/api/` (helpers in `lib/comments/`), deployed with the site whenever Pages builds or deploys from the wiki folder. Without the settings below the endpoints answer 503 and pages show no comment controls.
 
 Set these on the Pages project (Settings > Variables and Secrets, production):
 
