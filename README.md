@@ -63,6 +63,18 @@ Set these on the Pages project (Settings > Variables and Secrets, production):
 
 A GitHub App can replace the token: set `WIKI_GITHUB_APP_ID`, `WIKI_GITHUB_INSTALLATION_ID` and `WIKI_GITHUB_PRIVATE_KEY` (secret) instead. Issues are then filed by the app rather than by the token's account. Create the `wiki-comment` label in the repository first. How agents work through comments is in `claude/WIKI.md`.
 
+## Status changes from the page
+
+With the comment settings in place, the people listed under `approvers` in `silica.config.json` can change a page's status from its status chip, and going `active` stamps them into `approved_by` (the rules are in `content/meta/status-model.md`). Each change is one commit to the default branch that edits only the page's frontmatter, authored as the approver; `functions/api/status.js` makes it, identifying the approver by the signed Access token alone. Everyone else sees the plain chip.
+
+```json
+{ "approvers": { "someone@example.com": "Their Name" } }
+```
+
+The key is the email Cloudflare Access signs them in with, the value the name stamped into `approved_by`. The list is read from the default branch at request time, so a change to it applies without a redeploy.
+
+The token needs Contents read and write on the repository as well as Issues (a GitHub App needs the same two permissions). If the default branch is protected (required pull requests or checks), the token's account, or the app, must be allowed to bypass that rule, or the commit is refused.
+
 ## Pull Quartz updates into Silica
 
 Silica keeps Quartz's history, with Quartz as the `upstream` remote:

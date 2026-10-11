@@ -4,7 +4,7 @@ type: concept
 status: active
 approved_by: [{ who: Patrick Ward, when: 2026-10-06 }]
 created: 2026-10-02
-updated: 2026-10-06
+updated: 2026-10-11
 description: "The three signals every page carries: status (how far along the text is, with slop for unread machine writing), implementation (whether the software exists), and approved_by (which humans have read it), the rules for moving between them, and the lifecycle from decision to description."
 ---
 
@@ -63,12 +63,12 @@ The field is required in the **implementation folders** and refused everywhere e
 
 ## How a human promotes a page
 
-There is no button on the published page yet. A human edits the frontmatter and commits:
-
 1. Read the page top to bottom, fix what is wrong, and check its claims.
 2. Set `status: active` (or `draft` if it is a reasonable start but not settled).
 3. Add yourself: `approved_by: [{ who: <your name>, when: <today> }]`, and set `updated:` to today.
 4. Commit with a message such as `status(<page>): slop → active`.
+
+**From the page.** On a site deployed with reader comments, a person listed under `approvers` in `silica.config.json` sees the status chip as a menu. It offers the moves in the diagram below (plus `dropped` from `slop` and `draft`, for a question that went away), and "approve" on an `active` page they have not approved yet. Picking one commits steps 2 to 4 to the default branch, authored as that person: going `active` or approving stamps their name and today's date, going back to `slop` clears `approved_by`, and `superseded` asks for the replacing page. Approving is refused when the page has changed since the copy they read was built. The meta pages are left to a hand edit.
 
 An LLM may *propose* a promotion. It never sets `approved_by` and never promotes its own page.
 
@@ -110,10 +110,6 @@ flowchart LR
     U -->|no longer matters| D["Decision dropped"]
     C -->|no longer matters| D
 ```
-
-## Open questions
-
-- 2026-10-02: Promotion is a hand edit of the frontmatter. Whether to build an on-page status selector depends on where the wiki is hosted and who edits it without git. Nobody has decided.
 
 ## Related
 
