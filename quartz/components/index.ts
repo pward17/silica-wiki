@@ -5,6 +5,7 @@ import NotFound from "./pages/404"
 import ArticleTitle from "./ArticleTitle"
 import StatusBadge from "./StatusBadge"
 import PageComments from "./PageComments"
+import PageChanges from "./PageChanges"
 import Darkmode from "./Darkmode"
 import ReaderMode from "./ReaderMode"
 import Head from "./Head"
@@ -30,6 +31,7 @@ export {
   ArticleTitle,
   StatusBadge,
   PageComments,
+  PageChanges,
   Content,
   TagContent,
   FolderContent,

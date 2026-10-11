@@ -1,0 +1,124 @@
+// The "What changed" button sits in the row under the title, beside the
+// status chips and the Comment button, and looks like the Comment button.
+.page-changes-toggle {
+  display: inline-flex;
+  margin-left: 0.6rem;
+  vertical-align: middle;
+}
+
+.page-changes-toggle button {
+  background: none;
+  border: 1px solid var(--gray);
+  border-radius: 5px;
+  padding: 0.12rem 0.5rem;
+  color: var(--darkgray);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.1s ease,
+    color 0.1s ease,
+    border-color 0.1s ease;
+}
+
+.page-changes-toggle button:hover,
+.page-changes-toggle button[aria-expanded="true"] {
+  background: var(--secondary);
+  border-color: var(--secondary);
+  color: var(--light);
+}
+
+.page-changes {
+  margin: 0.2rem 0 1rem 0;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.page-changes[hidden] {
+  display: none;
+}
+
+.page-changes p {
+  margin: 0 0 0.4rem 0;
+}
+
+.page-changes-note {
+  color: var(--darkgray);
+}
+
+.page-changes-head q {
+  font-style: italic;
+}
+
+.page-changes-diff {
+  margin-top: 0.5rem;
+  font-family: var(--codeFont);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  border-radius: 4px;
+}
+
+.page-changes-line {
+  display: flex;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.page-changes-sign {
+  flex: none;
+  width: 1.4em;
+  text-align: center;
+  user-select: none;
+  color: var(--gray);
+}
+
+.page-changes-text {
+  flex: 1;
+  min-width: 0;
+  padding-right: 0.4rem;
+}
+
+// Green and red tints that read on both themes; the marked words get a
+// stronger tint of the same colour.
+.page-changes-add {
+  background: rgba(46, 160, 67, 0.14);
+}
+
+.page-changes-del {
+  background: rgba(218, 54, 51, 0.12);
+}
+
+.page-changes-add .page-changes-sign {
+  color: #2ea043;
+}
+
+.page-changes-del .page-changes-sign {
+  color: #da3633;
+}
+
+.page-changes-diff ins,
+.page-changes-diff del {
+  text-decoration: none;
+  border-radius: 2px;
+}
+
+.page-changes-diff ins {
+  background: rgba(46, 160, 67, 0.35);
+}
+
+.page-changes-diff del {
+  background: rgba(218, 54, 51, 0.3);
+  // Removed words read as removed without the colour too.
+  text-decoration: line-through;
+}
+
+.page-changes-gap {
+  padding: 0.15rem 0 0.15rem 1.4em;
+  color: var(--gray);
+  font-family: var(--bodyFont);
+  font-style: italic;
+}

@@ -32,6 +32,7 @@ export const defaultContentPageLayout: PageLayout = {
     Component.ArticleTitle(),
     Component.StatusBadge(),
     Component.PageComments(),
+    Component.PageChanges(),
     Component.ContentMeta(),
     Component.TagList(),
   ],
@@ -64,6 +65,7 @@ export const defaultListPageLayout: PageLayout = {
     Component.ArticleTitle(),
     Component.StatusBadge(),
     Component.PageComments(),
+    Component.PageChanges(),
     Component.ContentMeta(),
   ],
   left: [
