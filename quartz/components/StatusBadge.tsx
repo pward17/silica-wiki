@@ -20,6 +20,9 @@ import {
 import { Root, Element } from "hast"
 import { visit } from "unist-util-visit"
 import { toString } from "hast-util-to-string"
+import { buildCommit, repoPath } from "../util/build"
+// @ts-ignore
+import script from "./scripts/statusmenu.inline"
 
 // The text of every h2 on the page, which is where a decision's "Chosen" sits.
 function h2Texts(tree: Root | undefined): string[] {
@@ -33,10 +36,12 @@ function h2Texts(tree: Root | undefined): string[] {
 
 // Renders the wiki's three axes under the page title: the status chip (author
 // intent), the implementation chip (whether the thing exists yet) and the
-// approved_by line (human review of the text). All three are read-outs: a
-// human changes status and approved_by by editing the frontmatter and
-// committing, as content/meta/status-model.md describes. A folder page gets a
-// count of its pages' implementation values in place of a value of its own.
+// approved_by line (human review of the text). For a reader on the wiki's
+// approver list the status chip opens a menu that commits a status change,
+// and going active stamps them into approved_by (statusmenu.inline.ts and
+// functions/api/status.js); for everyone else all three are read-outs. A
+// folder page gets a count of its pages' implementation values in place of a
+// value of its own.
 const StatusBadge: QuartzComponent = ({
   fileData,
   allFiles,
@@ -63,7 +68,11 @@ const StatusBadge: QuartzComponent = ({
       : "Not verified"
 
   return (
-    <div class={classNames(displayClass, "status-badge")}>
+    <div
+      class={classNames(displayClass, "status-badge")}
+      data-page-path={repoPath(fileData.filePath)}
+      data-page-commit={buildCommit()}
+    >
       {pageType && <span class="type-chip">{pageType}</span>}
       {status && (
         <span class={`status-chip status-${status}`} title="How far along the text is">
@@ -162,6 +171,129 @@ StatusBadge.css = `
   border: 1px dashed var(--gray);
   color: var(--darkgray);
 }
+
+/* The chip as a button, only for approvers once /api/status says so. */
+.status-badge .status-chip.status-editable {
+  cursor: pointer;
+}
+
+.status-badge .status-chip.status-editable::after {
+  content: " ▾";
+  font-weight: 400;
+}
+
+.status-badge .status-chip.status-editable:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 2px;
+}
+
+#wiki-status-menu {
+  position: absolute;
+  z-index: 1000;
+  width: min(20rem, calc(100vw - 24px));
+  padding: 0.35rem;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+  font-size: 0.85rem;
+}
+
+#wiki-status-menu .wiki-status-option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.35rem 0.4rem;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--dark);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+#wiki-status-menu .wiki-status-option:hover,
+#wiki-status-menu .wiki-status-option:focus-visible {
+  background: var(--lightgray);
+}
+
+#wiki-status-menu .status-chip,
+#wiki-status-menu .wiki-status-approve {
+  flex: none;
+  min-width: 5.5rem;
+  border-radius: 4px;
+  padding: 0.1rem 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+  background: var(--chip);
+  color: var(--chip-ink);
+}
+
+#wiki-status-menu .wiki-status-approve {
+  background: ${STATUS_COLORS.active};
+  color: ${STATUS_INK.active};
+}
+
+#wiki-status-menu .wiki-status-note {
+  color: var(--darkgray);
+}
+
+#wiki-status-menu .wiki-status-confirm:not(:empty) {
+  margin-top: 0.35rem;
+  padding: 0.5rem 0.4rem 0.2rem;
+  border-top: 1px solid var(--lightgray);
+}
+
+#wiki-status-menu p {
+  margin: 0 0 0.4rem;
+}
+
+#wiki-status-menu .wiki-status-message {
+  margin: 0.3rem 0.4rem 0.1rem;
+  color: var(--darkgray);
+}
+
+#wiki-status-menu .wiki-status-message:empty {
+  display: none;
+}
+
+#wiki-status-menu .wiki-status-input {
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 0.4rem;
+  padding: 0.3rem 0.4rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 4px;
+  background: var(--light);
+  color: var(--dark);
+  font: inherit;
+}
+
+#wiki-status-menu .wiki-status-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+#wiki-status-menu .wiki-status-actions button {
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--lightgray);
+  border-radius: 4px;
+  background: var(--light);
+  color: var(--dark);
+  font: inherit;
+  cursor: pointer;
+}
+
+#wiki-status-menu .wiki-status-actions .wiki-status-go {
+  background: var(--secondary);
+  border-color: var(--secondary);
+  color: var(--light);
+}
 `
+
+StatusBadge.afterDOMLoaded = script
 
 export default (() => StatusBadge) satisfies QuartzComponentConstructor
