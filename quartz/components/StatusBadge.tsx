@@ -36,10 +36,11 @@ function h2Texts(tree: Root | undefined): string[] {
 
 // Renders the wiki's three axes under the page title: the status chip (author
 // intent), the implementation chip (whether the thing exists yet) and the
-// approved_by line (human review of the text). For a reader on the wiki's
-// approver list the status chip opens a menu that commits a status change,
-// and going active stamps them into approved_by (statusmenu.inline.ts and
-// functions/api/status.js); for everyone else all three are read-outs. A
+// approved_by line (human review of the text). On a deployment with the
+// status endpoint the status chip opens a menu that commits a status change,
+// and going active stamps the name the reader signs with into approved_by
+// (statusmenu.inline.ts and functions/api/status.js); otherwise all three
+// are read-outs. A
 // folder page gets a count of its pages' implementation values in place of a
 // value of its own.
 const StatusBadge: QuartzComponent = ({
@@ -172,7 +173,7 @@ StatusBadge.css = `
   color: var(--darkgray);
 }
 
-/* The chip as a button, only for approvers once /api/status says so. */
+/* The chip as a button, once /api/status says the deployment supports it. */
 .status-badge .status-chip.status-editable {
   cursor: pointer;
 }

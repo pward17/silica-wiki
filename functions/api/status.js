@@ -4,16 +4,15 @@
 //   POST /api/status                    { path, status | approve, commit, supersededBy }
 //
 // The change is a commit to the default branch that edits only the page's
-// frontmatter: status, updated, approved_by and superseded_by. Only people in
-// `approvers` in silica.config.json may make one, identified by the signed
-// Cloudflare Access token, and going active stamps their name and today's
-// date into approved_by. The commit is authored as them, so git blame says
-// who vouched. Which moves exist is in lib/status/moves.js.
+// frontmatter: status, updated, approved_by and superseded_by. Anyone who can
+// reach the site may make one, since Cloudflare Access already decides who
+// that is. The commit is authored by the account behind the wiki's token;
+// going active or approving needs the person to sign with their name, and
+// that typed name and today's date go into approved_by and the commit
+// message. Which moves exist is in lib/status/moves.js.
 
-import { verifiedEmail } from "../../lib/comments/access.js"
 import { github, isConfigured } from "../../lib/comments/github.js"
 import { json } from "../../lib/comments/respond.js"
-import { approverName, fromBase64, wikiRoot } from "../../lib/status/approvers.js"
 import {
   joinFrontmatter,
   readApprovals,
@@ -24,6 +23,9 @@ import {
 } from "../../lib/status/frontmatter.js"
 import { MOVES, MOVE_NOTES, approvalsAfter, today } from "../../lib/status/moves.js"
 
+const fromBase64 = (value) =>
+  new TextDecoder().decode(Uint8Array.from(atob(value.replace(/\s/g, "")), (c) => c.charCodeAt(0)))
+
 const toBase64 = (text) => {
   const bytes = new TextEncoder().encode(text)
   let binary = ""
@@ -31,6 +33,19 @@ const toBase64 = (text) => {
     binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000))
   }
   return btoa(binary)
+}
+
+// The wiki root is whatever sits in front of content/ in a page's path, so a
+// project with the wiki in a subfolder has its pages under wiki/content/.
+const wikiRoot = (pagePath) => pagePath.slice(0, pagePath.indexOf("content/"))
+
+// A signature is a person's name: letters, spaces and the punctuation names
+// carry. Nothing that YAML or the approved_by reader would trip over.
+function signatureFrom(value) {
+  const name = String(value || "")
+    .trim()
+    .replace(/\s+/g, " ")
+  return /^\p{L}[\p{L}\p{M} .'-]{0,59}$/u.test(name) ? name : null
 }
 
 // The same shape check comments use: a Markdown file under some content/.
@@ -55,12 +70,11 @@ async function currentPage(env, path) {
   return front ? { sha: file.sha, text, front } : null
 }
 
-function describe(front, name) {
+function describe(front) {
   const status = readKey(front.lines, "status")
   const approvals = readApprovals(front.lines)
   const moves = (MOVES[status] || []).map((to) => ({ to, note: MOVE_NOTES[to] }))
-  const approved = approvals.some((a) => a.who.toLowerCase() === name.toLowerCase())
-  return { status, approvals, moves, canApprove: status === "active" && !approved }
+  return { status, approvals, moves, canApprove: status === "active" }
 }
 
 // The person vouches for the text they read. If the file on the default
@@ -109,18 +123,12 @@ export async function onRequest(context) {
   if (!path) return json(400, { error: "Not a page whose status can change here." })
 
   try {
-    const identity = await verifiedEmail(request, env)
-    const name = identity.email ? await approverName(env, path, identity.email) : null
-    if (request.method === "GET" && !name) return json(200, { canEdit: false })
-    if (identity.error) return json(identity.error.status, { error: identity.error.message })
-    if (!name) return json(403, { error: "You are not on this wiki's approver list." })
-
     const page = await currentPage(env, path)
     if (!page) {
       return json(404, { error: "The page is not on the default branch, or has no frontmatter." })
     }
-    const state = describe(page.front, name)
-    if (request.method === "GET") return json(200, { canEdit: true, name, ...state })
+    const state = describe(page.front)
+    if (request.method === "GET") return json(200, { canEdit: true, ...state })
 
     const to = payload.approve ? state.status : String(payload.status || "")
     if (payload.approve ? !state.canApprove : !state.moves.some((m) => m.to === to)) {
@@ -128,7 +136,10 @@ export async function onRequest(context) {
         error: `The page is ${state.status} now, and that change no longer applies. Reload it.`,
       })
     }
+    let name = ""
     if (to === "active") {
+      name = signatureFrom(payload.name)
+      if (!name) return json(400, { error: "Sign with your name to approve the page." })
       const rawCommit = String(payload.commit || "").trim()
       const commit = /^[0-9a-f]{7,40}$/.test(rawCommit) ? rawCommit : ""
       if (!(await readWhatTheyApprove(env, path, page.sha, commit))) {
@@ -156,14 +167,13 @@ export async function onRequest(context) {
     const pageName = path.split("/").pop().replace(/\.md$/, "")
     const message = payload.approve
       ? `status(${pageName}): approved by ${name}`
-      : `status(${pageName}): ${state.status} → ${to}`
+      : `status(${pageName}): ${state.status} → ${to}${name ? `, approved by ${name}` : ""}`
     await github(env, "PUT", `/contents/${path}`, {
       message,
       content: toBase64(joinFrontmatter(page.front)),
       sha: page.sha,
-      author: { name, email: identity.email },
     })
-    return json(200, { ...describe(page.front, name), canEdit: true, name })
+    return json(200, { ...describe(page.front), canEdit: true })
   } catch (err) {
     // A branch rule (required reviews, required checks) refuses the push
     // outright; the bot's account has to be allowed to bypass it.
