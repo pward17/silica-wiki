@@ -1,10 +1,27 @@
-// The status chip as a menu, for the people on the wiki's approver list.
-// Everyone else keeps the plain chip: /api/status says whether this reader may
-// change the page, and the chip only turns into a button when it says yes.
-// Picking a move commits the frontmatter change to the default branch through
+// The status chip as a menu. Cloudflare Access already decides who can read
+// the site, so everyone who can read it may change a page's status; the chip
+// only turns into a button once /api/status says the deployment supports it.
+// Approving, or going active, asks the person to sign with their name, which
+// is what approved_by records. Picking a move commits the frontmatter change to the default branch through
 // functions/api/status.js; the page shows it once the site has rebuilt.
 
 const MENU_ID = "wiki-status-menu"
+const SIGNATURE_KEY = "wiki-status-signature"
+
+// The last name signed in this browser, offered again as a convenience.
+function lastSignature(): string {
+  try {
+    return localStorage.getItem(SIGNATURE_KEY) ?? ""
+  } catch {
+    return ""
+  }
+}
+
+function rememberSignature(name: string) {
+  try {
+    localStorage.setItem(SIGNATURE_KEY, name)
+  } catch {}
+}
 
 interface Move {
   to: string
@@ -13,7 +30,6 @@ interface Move {
 
 interface StatusState {
   canEdit: boolean
-  name?: string
   status?: string
   approvals?: { who: string; when?: string }[]
   moves?: Move[]
@@ -102,10 +118,20 @@ async function commit(chip: HTMLElement, body: Record<string, unknown>, menu: HT
 function confirmStep(chip: HTMLElement, menu: HTMLElement, state: StatusState, move: Move | null) {
   const step = menu.querySelector<HTMLElement>(".wiki-status-confirm")!
   step.replaceChildren()
-  const what = move
-    ? `${state.status} → ${move.to}${move.to === "active" ? `, approved by ${state.name}` : ""}`
-    : `Add ${state.name} to the approvals`
+  const signs = !move || move.to === "active"
+  const what = move ? `${state.status} → ${move.to}` : "Add your name to the approvals"
   step.appendChild(el("p", "wiki-status-what", what))
+
+  let signature: HTMLInputElement | null = null
+  if (signs) {
+    signature = el("input", "wiki-status-input")
+    signature.placeholder = "Sign with your name"
+    signature.setAttribute("aria-label", "Your name, recorded in approved_by")
+    signature.autocomplete = "name"
+    signature.maxLength = 60
+    signature.value = lastSignature()
+    step.appendChild(signature)
+  }
 
   let input: HTMLInputElement | null = null
   if (move?.to === "superseded") {
@@ -130,17 +156,23 @@ function confirmStep(chip: HTMLElement, menu: HTMLElement, state: StatusState, m
   const cancel = el("button", "wiki-status-cancel", "Cancel")
   cancel.type = "button"
   go.addEventListener("click", () => {
-    if (input && !input.value.trim()) {
-      input.focus()
-      return
+    for (const field of [signature, input]) {
+      if (field && !field.value.trim()) {
+        field.focus()
+        return
+      }
     }
-    const body = move ? { status: move.to, supersededBy: input?.value.trim() } : { approve: true }
+    const name = signature?.value.trim()
+    if (name) rememberSignature(name)
+    const body = move
+      ? { status: move.to, supersededBy: input?.value.trim(), name }
+      : { approve: true, name }
     commit(chip, body, menu)
   })
   cancel.addEventListener("click", () => step.replaceChildren())
   row.append(go, cancel)
   step.appendChild(row)
-  ;(input ?? go).focus()
+  ;(signature && !signature.value ? signature : (input ?? go)).focus()
 }
 
 function renderMenu(chip: HTMLElement, state: StatusState, note = "") {
@@ -153,7 +185,7 @@ function renderMenu(chip: HTMLElement, state: StatusState, note = "") {
     (move) => ({ label: move.to, note: move.note, move }),
   )
   if (state.canApprove) {
-    options.push({ label: "approve", note: "Add my name to the approvals", move: null })
+    options.push({ label: "approve", note: "Sign the page as read and vouched for", move: null })
   }
   if (options.length === 0) {
     menu.appendChild(el("p", "wiki-status-empty", "Nothing to change from here."))

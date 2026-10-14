@@ -4,7 +4,7 @@ type: concept
 status: active
 approved_by: [{ who: Patrick Ward, when: 2026-10-06 }]
 created: 2026-10-02
-updated: 2026-10-11
+updated: 2026-10-13
 description: "The three signals every page carries: status (how far along the text is, with slop for unread machine writing), implementation (whether the software exists), and approved_by (which humans have read it), the rules for moving between them, and the lifecycle from decision to description."
 ---
 
@@ -68,7 +68,7 @@ The field is required in the **implementation folders** and refused everywhere e
 3. Add yourself: `approved_by: [{ who: <your name>, when: <today> }]`, and set `updated:` to today.
 4. Commit with a message such as `status(<page>): slop → active`.
 
-**From the page.** On a site deployed with reader comments, a person listed under `approvers` in `silica.config.json` sees the status chip as a menu. It offers the moves in the diagram below (plus `dropped` from `slop` and `draft`, for a question that went away), and "approve" on an `active` page they have not approved yet. Picking one commits steps 2 to 4 to the default branch, authored as that person: going `active` or approving stamps their name and today's date, going back to `slop` clears `approved_by`, and `superseded` asks for the replacing page. Approving is refused when the page has changed since the copy they read was built. The meta pages are left to a hand edit.
+**From the page.** On a site deployed with reader comments, everyone who can open the site sees the status chip as a menu; Cloudflare Access is the only gate. It offers the moves in the diagram below (plus `dropped` from `slop` and `draft`, for a question that went away), and "approve" on an `active` page. Picking one commits steps 2 to 4 to the default branch, authored by the account behind the wiki's token: going `active` or approving asks the person to sign with their name and stamps that name and today's date, going back to `slop` clears `approved_by`, and `superseded` asks for the replacing page. Approving is refused when the page has changed since the copy they read was built. The meta pages are left to a hand edit.
 
 An LLM may *propose* a promotion. It never sets `approved_by` and never promotes its own page.
 

@@ -66,13 +66,7 @@ A GitHub App can replace the token: set `WIKI_GITHUB_APP_ID`, `WIKI_GITHUB_INSTA
 
 ## Status changes from the page
 
-With the comment settings in place, the people listed under `approvers` in `silica.config.json` can change a page's status from its status chip, and going `active` stamps them into `approved_by` (the rules are in `content/meta/status-model.md`). Each change is one commit to the default branch that edits only the page's frontmatter, authored as the approver; `functions/api/status.js` makes it, identifying the approver by the signed Access token alone. Everyone else sees the plain chip.
-
-```json
-{ "approvers": { "someone@example.com": "Their Name" } }
-```
-
-The key is the email Cloudflare Access signs them in with, the value the name stamped into `approved_by`. The list is read from the default branch at request time, so a change to it applies without a redeploy.
+With the comment settings in place, anyone who can open the site can change a page's status from its status chip: Cloudflare Access already decides who that is, so there is no second list. Going `active`, or approving an `active` page, asks the person to sign with their name, and that name and the date go into `approved_by` (the rules are in `content/meta/status-model.md`). Each change is one commit to the default branch that edits only the page's frontmatter, made by `functions/api/status.js` and authored by the account behind the token (or the app); the commit message carries the signed name.
 
 The token needs Contents read and write on the repository as well as Issues (a GitHub App needs the same two permissions). If the default branch is protected (required pull requests or checks), the token's account, or the app, must be allowed to bypass that rule, or the commit is refused.
 
