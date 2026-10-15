@@ -35,6 +35,16 @@ Then:
    ```
    `implementationFolders` are the folders whose pages must say whether their software is built; `maxTitleWords` is the title length above which the lint warns (it never fails on it). These are the defaults.
 
+### When the code lives in another repository
+
+Agents started in a code repository whose wiki is a separate repository need the same skill, agents and rules, pointing at the wiki. From the wiki's repository:
+
+```
+wiki/scripts/install-claude.sh "<Project name>" --into <path to the code repository>
+```
+
+This writes the files into that repository's `.claude/`, with the wiki's absolute path on this machine, and comments still filed against the wiki's repository. Add `@.claude/silica/WIKI.md` to its `CLAUDE.md`, and rerun the command after pulling Silica updates and on any machine where the wiki is cloned elsewhere.
+
 ## Pull Silica updates into a project
 
 ```
